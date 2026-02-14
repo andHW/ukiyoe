@@ -21,7 +21,7 @@ export default function AppHeader({ showSubtitle = true }: AppHeaderProps) {
           fontSize: { xs: "2rem", sm: "3rem" },
         }}
       >
-        浮世絵 Ukiyoe
+        百景 Hyakkei
       </Typography>
       {showSubtitle && (
         <Typography variant="body2" sx={{ color: tokens.colors.textMuted, mt: -1, mb: 2 }}>

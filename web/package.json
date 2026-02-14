@@ -1,9 +1,9 @@
 {
-  "name": "ukiyoe",
+  "name": "hyakkei",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Ukiyoe - A strategic tile game and solver inspired by Niya/Okiya.",
+  "description": "Hyakkei - A strategic tile game and solver inspired by Niya/Okiya.",
   "author": "Andreas",
   "license": "MIT",
   "repository": {
