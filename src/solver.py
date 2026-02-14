@@ -39,10 +39,10 @@ for _r in range(3):
 # Freeze as tuple for faster iteration in the hot loop
 WIN_MASKS: tuple[tuple[int, Outcome], ...] = tuple(_win_masks)
 
-# Edge Indices (Player 1 must start here — all non-interior cells)
+# Edge Indices (Player 1 must start here - all non-interior cells)
 OPENING_INDICES: set[int] = {0, 1, 2, 3, 4, 7, 8, 11, 12, 13, 14, 15}
 
-# Scores — named from P1's perspective
+# Scores - named from P1's perspective
 P1_WINS: int = 1
 P1_LOSES: int = -1
 DRAW_SCORE: int = 0

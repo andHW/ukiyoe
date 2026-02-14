@@ -1,5 +1,5 @@
 """
-Niya batch solver — randomly samples boards across the permutation space.
+Niya batch solver - randomly samples boards across the permutation space.
 
 Usage:
     python src/main.py              # Solve with P2 analysis (slower, full data)
@@ -24,7 +24,7 @@ TOTAL_PERMS: int = math.factorial(16)  # 20,922,789,888,000
 def solve_one(perm_index: int, skip_p2: bool) -> tuple[list[tuple], list[tuple]]:
     """
     Solve a single board and return DB-ready rows.
-    Returns (solution_rows, p2_rows) — each may be empty if board is a duplicate.
+    Returns (solution_rows, p2_rows) - each may be empty if board is a duplicate.
     """
     board = get_permutation(TILES, perm_index)
     if not board:
@@ -84,7 +84,7 @@ def main() -> None:
     solved_count = get_solved_count()
 
     mode = "P1 only (fast)" if args.skip_p2 else "P1 + P2 analysis"
-    print(f"[*] Niya Solver — {mode}")
+    print(f"[*] Niya Solver - {mode}")
     if solved_count:
         print(f"[*] Resuming with {solved_count:,} boards from previous runs")
     print(f"[*] Sampling random boards... (Ctrl+C to stop)\n")

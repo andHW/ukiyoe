@@ -279,7 +279,7 @@ def main() -> None:
     if args.list:
         print("\nAvailable queries:\n")
         for i, (title, desc, _) in enumerate(QUERIES, 1):
-            print(f"  {i:2d}. {title} — {desc}")
+            print(f"  {i:2d}. {title} - {desc}")
         print()
         return
 

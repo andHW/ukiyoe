@@ -1,7 +1,8 @@
 # Niya Game Solver
 
 > **[Niya](https://boardgamegeek.com/boardgame/125311/okiya)** (also known as Okiya, Geisha, Kizz-Kizz)
-> — Designed by **Bruno Cathala**, Art by **Cyril Bouquet**
+>
+> - Designed by **Bruno Cathala**, Art by **Cyril Bouquet**
 
 ## The Goal
 

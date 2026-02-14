@@ -1,4 +1,4 @@
-# Niya Solver — Heuristics & Analytics
+# Niya Solver - Heuristics & Analytics
 
 All queries are implemented in [`analyze.py`](analyze.py). Run them against the solver's `niya.db` database:
 

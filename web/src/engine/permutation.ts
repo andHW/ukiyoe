@@ -15,7 +15,7 @@ for (let p = 0; p < 4; p++) {
 
 /**
  * Convert a permutation index (board code) into a tile layout.
- * Identical algorithm to Python's get_permutation() — factoradic decomposition.
+ * Identical algorithm to Python's get_permutation() - factoradic decomposition.
  *
  * @param code Permutation index (0 to 16!-1)
  * @returns Array of 16 tiles, or null if code is out of range
