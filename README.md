@@ -1,12 +1,14 @@
-# Niya Game Solver
+# Ukiyoe
 
-> **[Niya](https://boardgamegeek.com/boardgame/125311/okiya)** (also known as Okiya, Geisha, Kizz-Kizz)
+> **A strategic tile game inspired by [Niya/Okiya](https://boardgamegeek.com/boardgame/125311/okiya).**
 >
-> - Designed by **Bruno Cathala**, Art by **Cyril Bouquet**
+> *Original game design by Bruno Cathala, Art by Cyril Bouquet.*
 
-## The Goal
+## The Project
 
-This project is a high-performance, parallelized Python solver for the board game **Niya**. The objective is to analyze all ~20 trillion possible board states (pruned via symmetry) to determine if Player 1 or Player 2 has a forced win and to extract a winning heuristic for human play.
+**Ukiyoe** is a modern web implementation and high-performance solver for the classic tile strategy game. It features a beautiful React-based interface and a Python backend capable of solving the game's ~20 trillion state space.
+
+The goal was to create both a polished playable version and a "perfect play" engine to analyze the game's depth.
 
 ## The Game Rules
 

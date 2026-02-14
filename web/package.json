@@ -1,8 +1,15 @@
 {
-  "name": "web",
+  "name": "ukiyoe",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "Ukiyoe - A strategic tile game and solver inspired by Niya/Okiya.",
+  "author": "Andreas",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andreas/ukiyoe.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
