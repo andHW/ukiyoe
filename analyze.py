@@ -216,6 +216,21 @@ def format_table(headers: list[str], rows: list[tuple]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def print_board_guide() -> None:
+    """Print the board index layout for reference."""
+    print("  Board Index Reference:")
+    print("  +----+----+----+----+")
+    print("  |  0 |  1 |  2 |  3 |")
+    print("  +----+----+----+----+")
+    print("  |  4 |  5 |  6 |  7 |")
+    print("  +----+----+----+----+")
+    print("  |  8 |  9 | 10 | 11 |")
+    print("  +----+----+----+----+")
+    print("  | 12 | 13 | 14 | 15 |")
+    print("  +----+----+----+----+")
+    print("")
+
+
 def run_query(conn: sqlite3.Connection, index: int) -> None:
     """Run a single query and print formatted results."""
     title, description, sql = QUERIES[index]
@@ -298,6 +313,7 @@ def main() -> None:
                 sys.exit(1)
         else:
             # Run all queries
+            print_board_guide()
             for i in range(len(QUERIES)):
                 run_query(conn, i)
 

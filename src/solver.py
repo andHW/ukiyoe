@@ -40,6 +40,12 @@ for _r in range(3):
 WIN_MASKS: tuple[tuple[int, Outcome], ...] = tuple(_win_masks)
 
 # Edge Indices (Player 1 must start here - all non-interior cells)
+# Edge Indices (Player 1 must start here - all non-interior cells)
+# Board Layout (Indices 0-15):
+#  0  1  2  3
+#  4  5  6  7
+#  8  9 10 11
+# 12 13 14 15
 OPENING_INDICES: set[int] = {0, 1, 2, 3, 4, 7, 8, 11, 12, 13, 14, 15}
 
 # Scores - named from P1's perspective
