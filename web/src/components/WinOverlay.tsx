@@ -5,6 +5,8 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import CloseIcon from "@mui/icons-material/Close";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import CasinoIcon from "@mui/icons-material/Casino";
 import type { GameState, GameMode } from "../engine/types";
 import { tokens } from "../theme";
 
@@ -119,6 +121,7 @@ export default function WinOverlay({
           <Button
             variant="contained" 
             onClick={onRestartSame}
+            startIcon={<RestartAltIcon />}
             fullWidth
             sx={{ color: tokens.colors.bgPrimary, bgcolor: tokens.colors.accentCyan, '&:hover': { bgcolor: tokens.colors.accentCyanDark } }}
           >
@@ -128,6 +131,7 @@ export default function WinOverlay({
             variant="contained"
             color="primary"
             onClick={onRestartRandom}
+            startIcon={<CasinoIcon />}
             fullWidth
             sx={{ color: tokens.colors.bgPrimary }}
           >

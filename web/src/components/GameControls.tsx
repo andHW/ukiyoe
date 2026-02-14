@@ -43,7 +43,7 @@ export default function GameControls({
   onUndo,
 }: GameControlsProps) {
   const diffLabel =
-    difficulty === "easy" ? "😊 Easy" : difficulty === "medium" ? "🧠 Medium" : "💀 Hard";
+    difficulty === "easy" ? "😊 Easy" : difficulty === "medium" ? "🧠 Mid" : "💀 Hard";
 
   return (
     <Box sx={{ width: "100%", mt: 0.5, mb: 0.5, padding: "0 16px" }}>
