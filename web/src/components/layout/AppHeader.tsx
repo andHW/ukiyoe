@@ -24,7 +24,15 @@ export default function AppHeader({ showSubtitle = true }: AppHeaderProps) {
         百景 Hyakkei
       </Typography>
       {showSubtitle && (
-        <Typography variant="body2" sx={{ color: tokens.colors.textMuted, mt: -1, mb: 2 }}>
+        <Typography
+          variant="body2"
+          sx={{
+            color: tokens.colors.textMuted,
+            textAlign: "right",
+            mt: -1,
+            mb: 2,
+          }}
+        >
           A tile strategy game
         </Typography>
       )}

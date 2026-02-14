@@ -76,6 +76,86 @@ interface FallingTilesProps {
   enabled: boolean; // Now treated as "playing" vs "paused"
 }
 
+const popAnimation = keyframes`
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+  100% { transform: scale(0); opacity: 0; }
+`;
+
+interface FallingTileProps {
+  tile: TileProps;
+  isLowEnd: boolean;
+  enabled: boolean;
+  onAnimationEnd: (id: number) => void;
+}
+
+function FallingTile({ tile, isLowEnd, enabled, onAnimationEnd }: FallingTileProps) {
+  const [isPopped, setIsPopped] = useState(false);
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsPopped(true);
+  };
+
+  const handleAnimationEnd = () => {
+    if (isPopped) {
+      // If we just popped, wait a bit before respawning to leave a gap
+      setTimeout(() => {
+        onAnimationEnd(tile.id);
+      }, 1000);
+    } else {
+      // Normal fall finished, respawn immediately
+      onAnimationEnd(tile.id);
+    }
+  };
+
+  return (
+    <Box
+      onAnimationEnd={handleAnimationEnd}
+      onClick={handleClick}
+      sx={{
+        position: "absolute",
+        left: `${tile.left}%`,
+        width: `${tile.size}rem`,
+        height: `${tile.size}rem`,
+        zIndex: tile.zIndex,
+        userSelect: "none",
+        cursor: "pointer", // Indicate interactivity
+        pointerEvents: "auto", // Enable clicks on the tile itself
+        // Pass CSS variables for keyframes
+        "--start-rot": `${tile.rotationStart}deg`,
+        "--end-rot": `${tile.rotationEnd}deg`,
+        ...(isLowEnd
+          ? {
+              // Static Mode
+              top: `${tile.staticTop}%`,
+              transform: `rotate(${tile.rotationStart}deg)`,
+            }
+          : {
+              // Animated Mode
+              // Removed 'infinite', handled by state update onAnimationEnd
+              animation: `${fallAnimation} ${tile.duration}s linear`,
+              animationDelay: `${tile.delay}s`,
+              animationPlayState: enabled ? "running" : "paused",
+              // Initial placement off-screen
+              top: -150, 
+            }),
+      }}
+    >
+       <Box
+         sx={isPopped ? { animation: `${popAnimation} 0.3s ease-out forwards` } : undefined}
+       >
+        <BoardTile 
+          tile={tile.data}
+          overlapping={true}
+          forceVariant={tile.variant}
+          canInteract={false} // Keep internal interaction disabled, we handle click on wrapper
+        />
+      </Box>
+    </Box>
+  );
+}
+
 export default function FallingTiles({ enabled }: FallingTilesProps) {
   const [isLowEnd] = useState(() => {
     // Detect low-end device or reduced motion preference
@@ -112,43 +192,13 @@ export default function FallingTiles({ enabled }: FallingTilesProps) {
       aria-hidden="true"
     >
       {tiles.map((tile) => (
-        <Box
+        <FallingTile 
           key={`${tile.id}-${tile.generation}`}
-          onAnimationEnd={() => handleAnimationEnd(tile.id)}
-          sx={{
-            position: "absolute",
-            left: `${tile.left}%`,
-            width: `${tile.size}rem`,
-            height: `${tile.size}rem`,
-            zIndex: tile.zIndex,
-            userSelect: "none",
-            // Pass CSS variables for keyframes
-            "--start-rot": `${tile.rotationStart}deg`,
-            "--end-rot": `${tile.rotationEnd}deg`,
-            ...(isLowEnd
-              ? {
-                  // Static Mode
-                  top: `${tile.staticTop}%`,
-                  transform: `rotate(${tile.rotationStart}deg)`,
-                }
-              : {
-                  // Animated Mode
-                  // Removed 'infinite', handled by state update onAnimationEnd
-                  animation: `${fallAnimation} ${tile.duration}s linear`,
-                  animationDelay: `${tile.delay}s`,
-                  animationPlayState: enabled ? "running" : "paused",
-                  // Initial placement off-screen
-                  top: -150, 
-                }),
-          }}
-        >
-          <BoardTile 
-            tile={tile.data}
-            overlapping={true}
-            forceVariant={tile.variant}
-            canInteract={false}
-          />
-        </Box>
+          tile={tile}
+          isLowEnd={isLowEnd}
+          enabled={enabled}
+          onAnimationEnd={handleAnimationEnd}
+        />
       ))}
     </Box>
   );
