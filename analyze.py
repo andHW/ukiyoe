@@ -35,19 +35,32 @@ QUERIES: list[tuple[str, str, str]] = [
         "First-Mover Advantage",
         "How often P1 dominates all openings vs contested boards (P2 data only)",
         """
+        WITH categories(board_type, sort_order) AS (
+            VALUES
+                ('P1 dominates all openings', 1),
+                ('P2 dominates all openings', 2),
+                ('All draws', 3),
+                ('Mixed (contested)', 4)
+        ),
+        classified AS (
+            SELECT
+                CASE
+                    WHEN p2_wins_count = 0 AND draws_count = 0 THEN 'P1 dominates all openings'
+                    WHEN p1_wins_count = 0 AND draws_count = 0 THEN 'P2 dominates all openings'
+                    WHEN draws_count = p1_wins_count + p2_wins_count + draws_count THEN 'All draws'
+                    ELSE 'Mixed (contested)'
+                END AS board_type
+            FROM solutions
+            WHERE has_p2_data = 1
+        )
         SELECT
-            CASE
-                WHEN p2_wins_count = 0 AND draws_count = 0 THEN 'P1 dominates all openings'
-                WHEN p1_wins_count = 0 AND draws_count = 0 THEN 'P2 dominates all openings'
-                WHEN draws_count = p1_wins_count + p2_wins_count + draws_count THEN 'All draws'
-                ELSE 'Mixed (contested)'
-            END AS board_type,
-            COUNT(*) AS count,
-            ROUND(100.0 * COUNT(*) / (SELECT COUNT(*) FROM solutions WHERE has_p2_data = 1), 2) AS pct
-        FROM solutions
-        WHERE has_p2_data = 1
-        GROUP BY board_type
-        ORDER BY count DESC
+            c.board_type,
+            COUNT(cl.board_type) AS count,
+            ROUND(100.0 * COUNT(cl.board_type) / MAX((SELECT COUNT(*) FROM classified), 1), 2) AS pct
+        FROM categories c
+        LEFT JOIN classified cl ON cl.board_type = c.board_type
+        GROUP BY c.board_type, c.sort_order
+        ORDER BY c.sort_order
         """,
     ),
     (
@@ -155,19 +168,32 @@ QUERIES: list[tuple[str, str, str]] = [
         "Decisive vs Contested Boards",
         "How many boards have a unanimous result vs mixed across openings? (P2 data only)",
         """
+        WITH categories(board_class, sort_order) AS (
+            VALUES
+                ('P1 wins all', 1),
+                ('P2 wins all', 2),
+                ('All draws', 3),
+                ('Contested', 4)
+        ),
+        classified AS (
+            SELECT
+                CASE
+                    WHEN p1_wins_count = p1_wins_count + p2_wins_count + draws_count THEN 'P1 wins all'
+                    WHEN p2_wins_count = p1_wins_count + p2_wins_count + draws_count THEN 'P2 wins all'
+                    WHEN draws_count = p1_wins_count + p2_wins_count + draws_count THEN 'All draws'
+                    ELSE 'Contested'
+                END AS board_class
+            FROM solutions
+            WHERE has_p2_data = 1
+        )
         SELECT
-            CASE
-                WHEN p1_wins_count = p1_wins_count + p2_wins_count + draws_count THEN 'P1 wins all'
-                WHEN p2_wins_count = p1_wins_count + p2_wins_count + draws_count THEN 'P2 wins all'
-                WHEN draws_count = p1_wins_count + p2_wins_count + draws_count THEN 'All draws'
-                ELSE 'Contested'
-            END AS board_class,
-            COUNT(*) AS count,
-            ROUND(100.0 * COUNT(*) / (SELECT COUNT(*) FROM solutions WHERE has_p2_data = 1), 2) AS pct
-        FROM solutions
-        WHERE has_p2_data = 1
-        GROUP BY board_class
-        ORDER BY count DESC
+            c.board_class,
+            COUNT(cl.board_class) AS count,
+            ROUND(100.0 * COUNT(cl.board_class) / MAX((SELECT COUNT(*) FROM classified), 1), 2) AS pct
+        FROM categories c
+        LEFT JOIN classified cl ON cl.board_class = c.board_class
+        GROUP BY c.board_class, c.sort_order
+        ORDER BY c.sort_order
         """,
     ),
     (

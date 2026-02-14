@@ -2,7 +2,35 @@
 Utility functions for board generation, symmetry checking, and visualization.
 """
 
+import ctypes
 import math
+import os
+from itertools import permutations as _perms
+
+
+# ---------------------------------------------------------------------------
+# Load C canonicalization from solver_core.so (optional, much faster)
+# ---------------------------------------------------------------------------
+_c_canonicalize = None
+
+def _load_c_canonicalize():
+    global _c_canonicalize
+    so_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "solver_core.so")
+    try:
+        lib = ctypes.CDLL(so_path)
+        fn = lib.canonicalize_board_c
+        fn.argtypes = [
+            ctypes.POINTER(ctypes.c_int8),  # plants[16]
+            ctypes.POINTER(ctypes.c_int8),  # poems[16]
+            ctypes.POINTER(ctypes.c_int8),  # out_plants[16]
+            ctypes.POINTER(ctypes.c_int8),  # out_poems[16]
+        ]
+        fn.restype = None
+        _c_canonicalize = fn
+    except OSError:
+        pass
+
+_load_c_canonicalize()
 
 
 # Type aliases (avoiding circular import with models.py)
@@ -34,6 +62,9 @@ def get_transforms() -> list[list[int]]:
 
 TRANSFORM_MAPS: list[list[int]] = get_transforms()
 
+# Precompute all permutations of 4 labels (used for plant/poem relabeling)
+_LABEL_PERMS: list[tuple[int, ...]] = [tuple(p) for p in _perms(range(4))]
+
 
 def get_permutation(pool: list[Tile], index: int) -> Board | None:
     """Fetch the Nth lexicographic permutation directly, or None if out of range."""
@@ -63,10 +94,66 @@ def is_canonical(board_tuple: tuple[Tile, ...]) -> bool:
     return True
 
 
+def canonicalize_board(board: Board) -> tuple[Tile, ...]:
+    """
+    Find the lexicographically smallest board among ALL equivalences:
+      - 8 spatial symmetries (rotations + reflections)
+      - 24 plant label permutations
+      - 24 poem label permutations
+      - 2 plant↔poem swap options
+    Total: 8 × 24 × 24 × 2 = 9,216 equivalence transforms.
+
+    Uses C implementation when available (~1000x faster than Python).
+    """
+    if _c_canonicalize is not None:
+        plants = (ctypes.c_int8 * 16)(*(t[0] for t in board))
+        poems  = (ctypes.c_int8 * 16)(*(t[1] for t in board))
+        out_p  = (ctypes.c_int8 * 16)()
+        out_s  = (ctypes.c_int8 * 16)()
+        _c_canonicalize(plants, poems, out_p, out_s)
+        return tuple((int(out_p[i]), int(out_s[i])) for i in range(16))
+
+    # Pure Python fallback (slow)
+    bt = tuple(board)
+    best = bt
+
+    for mapping in TRANSFORM_MAPS:
+        spatial = tuple(bt[mapping[i]] for i in range(16))
+
+        for pp in _LABEL_PERMS:
+            for sp in _LABEL_PERMS:
+                c = tuple((pp[t[0]], sp[t[1]]) for t in spatial)
+                if c < best:
+                    best = c
+                c = tuple((pp[t[1]], sp[t[0]]) for t in spatial)
+                if c < best:
+                    best = c
+
+    return best
+
+
+def board_to_perm_index(board: tuple[Tile, ...] | Board) -> int:
+    """
+    Compute the lexicographic rank of a board permutation.
+    Board must be a permutation of the standard 16 tiles.
+    """
+    pool = sorted([(p, s) for p in range(4) for s in range(4)])
+    n = len(pool)
+    index = 0
+    available = list(pool)
+
+    for i, tile in enumerate(board):
+        k = available.index(tile)
+        index += k * math.factorial(n - 1 - i)
+        available.pop(k)
+
+    return index
+
+
 # --- Visualization ---
 
 PLANTS: list[str] = ["MAPL", "CHRY", "PINE", "IRIS"]
-POEMS: list[str] = ["SUN ", "BIRD", "RAIN", "CLD "]  # Padded for alignment
+POEMS: list[str] = ["SUN ", "BIRD", "RAIN", "FLAG"]  # Padded for alignment
 
 
 def print_board(board: Board) -> None:
