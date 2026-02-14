@@ -1,26 +1,21 @@
-// Game controls — mode buttons + action row
+// Game controls — action buttons only (mode is handled by Home/Routing)
 import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import Stack from "@mui/material/Stack";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import SettingsIcon from "@mui/icons-material/Settings";
+
+
+import Box from "@mui/material/Box";
+import TimerIcon from "@mui/icons-material/Timer";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import UndoIcon from "@mui/icons-material/Undo";
 import type { Difficulty, GameMode } from "../engine/types";
 import { tokens } from "../theme";
-import { formatTime } from "../utils/formatting";
 
-const outlineSx = { borderColor: tokens.colors.bgBoardDark, color: tokens.colors.textPrimary } as const;
-
-function modeButtonSx(isActive: boolean) {
-  return {
-    borderColor: tokens.colors.bgBoardDark,
-    color: isActive ? tokens.colors.bgPrimary : tokens.colors.textPrimary,
-    backgroundColor: isActive ? tokens.colors.accentAmber : "transparent",
-    "&:hover": {
-      backgroundColor: isActive ? "#d49730" : "rgba(232,168,56,0.1)",
-      borderColor: tokens.colors.accentAmber,
-    },
-  } as const;
-}
+const outlineSx = { 
+  borderColor: tokens.colors.bgBoardDark, 
+  color: tokens.colors.textPrimary,
+  padding: "10px 0", // Increased padding for touch targets
+  width: "100%", // Full width in flex container
+  height: "100%",
+} as const;
 
 interface GameControlsProps {
   gameMode: GameMode;
@@ -28,73 +23,67 @@ interface GameControlsProps {
   clockEnabled: boolean;
   clockTime: number;
   canUndo: boolean;
-  onNewGame: (mode: GameMode) => void;
+  onNewGame: () => void;
   onCycleDifficulty: () => void;
   onToggleClock: () => void;
   onUndo: () => void;
-  onOpenSettings: () => void;
 }
 
 export default function GameControls({
   gameMode,
   difficulty,
   clockEnabled,
-  clockTime,
   canUndo,
   onNewGame,
   onCycleDifficulty,
   onToggleClock,
   onUndo,
-  onOpenSettings,
 }: GameControlsProps) {
   const diffLabel =
     difficulty === "easy" ? "😊 Easy" : difficulty === "medium" ? "🧠 Medium" : "💀 Hard";
 
   return (
-    <>
-      {/* Row 1: Mode */}
-      <Stack direction="row" spacing={2} justifyContent="center" flexWrap="wrap">
-        <Button variant={gameMode === "local" ? "contained" : "outlined"} onClick={() => onNewGame("local")} sx={modeButtonSx(gameMode === "local")}>
-          👥 2 Players
-        </Button>
-        <Button variant={gameMode === "vs-ai" ? "contained" : "outlined"} onClick={() => onNewGame("vs-ai")} sx={modeButtonSx(gameMode === "vs-ai")}>
-          🤖 vs Computer
-        </Button>
-      </Stack>
-
-      {/* Row 2: Actions */}
-      <Stack direction="row" spacing={1.5} justifyContent="center" flexWrap="wrap" sx={{ mt: 2 }}>
+    <Box sx={{ width: "100%", mt: 0.5, mb: 0.5, padding: "0 16px" }}>
+      <Box sx={{ display: "flex", gap: 1.5, justifyContent: "space-between" }}>
+        
+        {/* Difficulty Button (VS AI only) */}
         {gameMode === "vs-ai" && (
-          <Button variant="outlined" onClick={onCycleDifficulty} sx={outlineSx}>
-            {diffLabel}
-          </Button>
+          <Box sx={{ flex: 1 }}>
+            <Button variant="outlined" onClick={onCycleDifficulty} sx={outlineSx}>
+              {diffLabel}
+            </Button>
+          </Box>
         )}
 
+        {/* Clock Toggle (Local only) */}
         {gameMode === "local" && (
-          <Button
-            variant="outlined"
-            onClick={onToggleClock}
-            sx={{ ...outlineSx, color: clockEnabled ? tokens.colors.accentAmber : tokens.colors.textPrimary }}
-            startIcon={!clockEnabled ? <AccessTimeIcon /> : undefined}
-          >
-            {clockEnabled ? `⏱ ${formatTime(clockTime)}` : "Clock"}
-          </Button>
+            <Box sx={{ flex: 1 }}>
+            <Button
+              variant="outlined"
+              onClick={onToggleClock}
+              sx={{ ...outlineSx, color: clockEnabled ? tokens.colors.accentAmber : tokens.colors.textPrimary }}
+            >
+              <TimerIcon /> 
+              {/* Removed time display text as requested */}
+            </Button>
+          </Box>
         )}
 
-        <Button variant="outlined" onClick={() => onNewGame(gameMode)} sx={outlineSx}>
-          🎲 New Board
-        </Button>
-        <Button variant="outlined" onClick={onUndo} disabled={!canUndo} sx={outlineSx}>
-          ↩ Undo
-        </Button>
+        {/* New Game */}
+        <Box sx={{ flex: 1 }}>
+          <Button variant="outlined" onClick={onNewGame} sx={outlineSx} aria-label="New Game">
+            <RestartAltIcon />
+          </Button>
+        </Box>
 
-        <IconButton
-          onClick={onOpenSettings}
-          sx={{ border: `1px solid ${tokens.colors.bgBoardDark}`, borderRadius: "12px", color: tokens.colors.textPrimary }}
-        >
-          <SettingsIcon />
-        </IconButton>
-      </Stack>
-    </>
+        {/* Undo */}
+        <Box sx={{ flex: 1 }}>
+          <Button variant="outlined" onClick={onUndo} disabled={!canUndo} sx={outlineSx} aria-label="Undo">
+            <UndoIcon />
+          </Button>
+        </Box>
+        
+      </Box>
+    </Box>
   );
 }

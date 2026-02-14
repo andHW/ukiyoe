@@ -31,6 +31,14 @@ export default function ClockDialog({
   onStart,
   onClose,
 }: ClockDialogProps) {
+  
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      let val = parseInt(e.target.value);
+      if (isNaN(val)) val = 0;
+      if (val > 10) val = 10; // Limit to 10
+      onMinutesChange(val.toString());
+  };
+
   return (
     <Dialog open={open} onClose={onClose} slotProps={{ paper: { sx: paperSx } }}>
       <DialogTitle sx={{ fontFamily: tokens.fonts.display, color: tokens.colors.accentAmber, textAlign: "center" }}>
@@ -43,10 +51,10 @@ export default function ClockDialog({
         <TextField
           type="number"
           value={customMinutes}
-          onChange={(e) => onMinutesChange(e.target.value)}
+          onChange={handleChange}
           fullWidth
           slotProps={{
-            htmlInput: { min: 1, max: 60, style: { textAlign: "center" } },
+            htmlInput: { min: 1, max: 10, style: { textAlign: "center" } },
           }}
           sx={{
             input: { color: tokens.colors.textPrimary },
@@ -58,7 +66,7 @@ export default function ClockDialog({
           }}
         />
         <Typography variant="caption" align="center" sx={{ color: tokens.colors.textMuted, mt: -1 }}>
-          Recommended: 2 minutes
+          Max: 10 minutes
         </Typography>
       </DialogContent>
       <DialogActions sx={{ justifyContent: "center", pb: 2 }}>

@@ -14,8 +14,8 @@ interface UseGameReturn {
   undoMove: () => void;
 }
 
-export function useGame(): UseGameReturn {
-  const [gameMode, setGameMode] = useState<GameMode>("local");
+export function useGame(initialMode: GameMode = "local"): UseGameReturn {
+  const [gameMode, setGameMode] = useState<GameMode>(initialMode);
   const [stateHistory, setStateHistory] = useState<GameState[]>(() => {
     const { board, code } = createRandomBoard();
     return [createInitialState(board, code)];

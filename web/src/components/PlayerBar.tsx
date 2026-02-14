@@ -12,18 +12,27 @@ const pulse = keyframes`
   50% { opacity: 0.5; }
 `;
 
-const Indicator = styled("div")<{ player: Player; isActive: boolean }>(({ player, isActive }) => ({
+const Indicator = styled("div")<{ player: Player; isActive: boolean }>(({ theme, player, isActive }) => ({
   display: "flex",
   alignItems: "center",
-  gap: 8,
-  padding: "8px 16px",
+  justifyContent: "center", // Center content
+  gap: 6,
+  padding: "6px 12px",
   borderRadius: tokens.radii.md,
   background: tokens.colors.bgCard,
   border: "2px solid transparent",
-  fontSize: "1rem",
+  color: tokens.colors.textPrimary,
+  fontSize: "0.9rem",
   fontFamily: tokens.fonts.display,
   fontWeight: 400,
   transition: "all 0.3s",
+  flex: 1, // Take available space
+  width: "100%", // Ensure full width in flex item
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "0.8rem",
+    padding: "4px 8px",
+    gap: 4,
+  },
   ...(isActive && player === "p1" && {
     borderColor: tokens.colors.p1Color,
     boxShadow: `0 0 12px ${tokens.colors.p1Glow}`,
@@ -34,33 +43,43 @@ const Indicator = styled("div")<{ player: Player; isActive: boolean }>(({ player
   }),
 }));
 
-const PlayerEmoji = styled("span")({
-  fontSize: "1.5rem",
-});
+const PlayerEmoji = styled("span")(({ theme }) => ({
+  fontSize: "1.2rem",
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "1rem",
+  },
+}));
 
 const Clock = styled("span")<{
   player: Player;
   isActive: boolean;
   isExpired: boolean;
-}>(({ player, isActive, isExpired }) => ({
+}>(({ theme, player, isActive, isExpired }) => ({
   fontFamily: tokens.fonts.sans,
-  fontSize: "1.4rem",
+  fontSize: "1rem",
   fontWeight: 600,
-  padding: "8px 16px",
-  borderRadius: tokens.radii.md,
+  padding: "4px 8px",
+  borderRadius: tokens.radii.sm,
   background: tokens.colors.bgCard,
-  border: "2px solid transparent",
-  minWidth: 80,
+  border: "1px solid transparent",
+  minWidth: 50,
   textAlign: "center" as const,
+  marginLeft: 4,
   transition: "all 0.3s",
+  [theme.breakpoints.down("sm")]: {
+    fontSize: "0.85rem",
+    minWidth: 40,
+    padding: "2px 6px",
+  },
   ...(isActive && player === "p1" && {
     borderColor: tokens.colors.p1Color,
-    boxShadow: `0 0 12px ${tokens.colors.p1Glow}`,
+    boxShadow: `0 0 8px ${tokens.colors.p1Glow}`,
     color: tokens.colors.p1Color,
   }),
   ...(isActive && player === "p2" && {
     borderColor: tokens.colors.textMuted,
-    boxShadow: `0 0 12px ${tokens.colors.p2Glow}`,
+    boxShadow: `0 0 8px ${tokens.colors.p2Glow}`,
+    color: tokens.colors.textMuted,
   }),
   ...(isExpired && {
     borderColor: tokens.colors.accentTerracotta,
@@ -78,6 +97,7 @@ interface PlayerBarProps {
   clockExpiredPlayer: Player | null;
   p1Time: number;
   p2Time: number;
+  isThinking?: boolean;
 }
 
 export default function PlayerBar({
@@ -89,14 +109,32 @@ export default function PlayerBar({
   clockExpiredPlayer,
   p1Time,
   p2Time,
+  isThinking = false,
 }: PlayerBarProps) {
   const showClock = gameMode === "local" && clockEnabled;
 
+  const getP2Label = () => {
+    if (gameMode !== "vs-ai") return "Player 2";
+    if (isThinking) return "Thinking...";
+    return "Computer";
+  };
+
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 3, mb: 2 }}>
+    <Box sx={{ 
+      display: "flex", 
+      alignItems: "center", 
+      gap: 1.5, 
+      mt: 1.5, 
+      mb: 1, 
+      width: "100%", // Ensure container takes full width
+      padding: "0 16px", // Add padding matching GameControls
+      justifyContent: "space-between" 
+      // Removed flexWrap to force side-by-side or use grid if needed. 
+      // With flex: 1 they should shrink/grow.
+    }}>
       <Indicator player="p1" isActive={currentPlayer === "p1" && !isGameOver}>
         <PlayerEmoji>{PLAYER_EMOJI.p1}</PlayerEmoji>
-        <span>Player 1</span>
+        <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Player 1</span>
         {showClock && (
           <Clock
             player="p1"
@@ -108,13 +146,13 @@ export default function PlayerBar({
         )}
       </Indicator>
 
-      <Typography variant="body1" sx={{ color: tokens.colors.textMuted, fontWeight: 600 }}>
+      <Typography variant="body2" sx={{ color: tokens.colors.textMuted, fontWeight: 600, fontSize: "0.8rem", minWidth: "fit-content" }}>
         vs
       </Typography>
 
       <Indicator player="p2" isActive={currentPlayer === "p2" && !isGameOver}>
-        <PlayerEmoji>{PLAYER_EMOJI.p2}</PlayerEmoji>
-        <span>{gameMode === "vs-ai" ? "Computer" : "Player 2"}</span>
+        <PlayerEmoji>{gameMode === "vs-ai" && isThinking ? "🤖" : PLAYER_EMOJI.p2}</PlayerEmoji>
+        <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{getP2Label()}</span>
         {showClock && (
           <Clock
             player="p2"

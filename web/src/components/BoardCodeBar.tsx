@@ -3,9 +3,11 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
 import Tooltip from "@mui/material/Tooltip";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import PublishIcon from "@mui/icons-material/Publish";
 import { tokens } from "../theme";
 import type { GameMode } from "../engine/types";
 
@@ -28,54 +30,69 @@ export default function BoardCodeBar({
   onLoad,
 }: BoardCodeBarProps) {
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 3, color: tokens.colors.textMuted }}>
-      <Typography variant="body2" sx={{ fontWeight: 500 }}>Board</Typography>
-      <Chip
-        label={`#${boardCode}`}
-        onClick={onCopy}
-        onDelete={onCopy}
-        deleteIcon={
-          <Tooltip title={copied ? "Copied!" : "Copy"}>
-            <ContentCopyIcon sx={{ fontSize: 14 }} />
-          </Tooltip>
-        }
-        variant="outlined"
-        size="small"
-        sx={{
-          fontFamily: "monospace",
-          fontSize: "0.8rem",
-          borderColor: tokens.colors.bgBoardDark,
-          color: tokens.colors.textMuted,
-          height: 24,
-        }}
-      />
+    <Box sx={{ 
+      display: "flex", 
+      flexDirection: "column",
+      alignItems: "center", 
+      justifyContent: "center",
+      gap: 2, 
+      mt: 3, 
+      mb: 4,
+      color: tokens.colors.textMuted 
+    }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Typography variant="body2" sx={{ fontWeight: 500 }}>Board #</Typography>
+        <Chip
+          label={boardCode.toString()}
+          onClick={onCopy}
+          onDelete={onCopy}
+          deleteIcon={
+            <Tooltip title={copied ? "Copied!" : "Copy"}>
+              <ContentCopyIcon sx={{ fontSize: 14 }} />
+            </Tooltip>
+          }
+          variant="outlined"
+          size="small"
+          sx={{
+            fontFamily: "monospace",
+            fontSize: "0.9rem",
+            borderColor: tokens.colors.bgBoardDark,
+            color: tokens.colors.textPrimary,
+            height: 32,
+            "& .MuiChip-label": { paddingLeft: 1.5, paddingRight: 1.5 },
+          }}
+        />
+      </Box>
+
       <TextField
         size="small"
-        placeholder="Paste code..."
+        placeholder="Load Code..."
         value={boardCodeInput}
         onChange={(e) => onInputChange(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && onLoad()}
+        slotProps={{
+          input: {
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={onLoad} edge="end" size="small">
+                  <PublishIcon fontSize="small" />
+                </IconButton>
+              </InputAdornment>
+            ),
+          },
+        }}
         sx={{
-          width: 120,
-          "& .MuiInputBase-root": { fontSize: "0.8rem", fontFamily: "monospace", height: 28 },
-          "& .MuiOutlinedInput-input": { padding: "4px 8px" },
+          width: 180,
+          "& .MuiInputBase-root": { 
+              fontSize: "0.9rem", 
+              fontFamily: "monospace", 
+              height: 40,
+              borderRadius: "20px",
+              paddingRight: 1
+          },
+          "& .MuiOutlinedInput-input": { padding: "4px 12px" },
         }}
       />
-      <Button
-        variant="outlined"
-        size="small"
-        onClick={onLoad}
-        sx={{
-          borderColor: tokens.colors.bgBoardDark,
-          color: tokens.colors.textPrimary,
-          fontSize: "0.75rem",
-          minWidth: 40,
-          height: 28,
-          padding: "0 10px",
-        }}
-      >
-        Load
-      </Button>
     </Box>
   );
 }

@@ -2,7 +2,11 @@
 import Typography from "@mui/material/Typography";
 import { tokens } from "../theme";
 
-export default function AppHeader() {
+interface AppHeaderProps {
+  showSubtitle?: boolean;
+}
+
+export default function AppHeader({ showSubtitle = true }: AppHeaderProps) {
   return (
     <>
       <Typography
@@ -19,9 +23,11 @@ export default function AppHeader() {
       >
         浮世絵 Ukiyoe
       </Typography>
-      <Typography variant="body2" sx={{ color: tokens.colors.textMuted, mt: -1, mb: 2 }}>
-        A tile strategy game
-      </Typography>
+      {showSubtitle && (
+        <Typography variant="body2" sx={{ color: tokens.colors.textMuted, mt: -1, mb: 2 }}>
+          A tile strategy game
+        </Typography>
+      )}
     </>
   );
 }
