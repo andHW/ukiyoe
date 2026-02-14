@@ -2,7 +2,7 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
-import { tokens } from "../theme";
+import { tokens } from "../../theme";
 
 export default function AppFooter() {
   return (

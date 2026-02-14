@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import HomePage from "./components/HomePage";
-import GamePage from "./components/GamePage";
+import HomePage from "./components/home/HomePage";
+import GamePage from "./components/game/GamePage";
 
 export default function App() {
   return (

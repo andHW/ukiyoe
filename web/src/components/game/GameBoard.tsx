@@ -1,9 +1,9 @@
 // Game board — 4×4 tile grid
 import { styled } from "@mui/material/styles";
-import type { GameState } from "../engine/types";
-import { PLAYER_EMOJI } from "../engine/constants";
+import type { GameState } from "../../engine/types";
+import { PLAYER_EMOJI } from "../../engine/constants";
 import BoardTile from "./BoardTile";
-import { tokens } from "../theme";
+import { tokens } from "../../theme";
 
 const Container = styled("div")({
   position: "relative",

@@ -6,8 +6,8 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import type { Settings } from "../hooks/useSettings";
-import { tokens } from "../theme";
+import type { Settings } from "../../hooks/useSettings";
+import { tokens } from "../../theme";
 
 const paperSx = {
   background: tokens.colors.bgSecondary,

@@ -1,6 +1,6 @@
 // App header — title + subtitle
 import Typography from "@mui/material/Typography";
-import { tokens } from "../theme";
+import { tokens } from "../../theme";
 
 interface AppHeaderProps {
   showSubtitle?: boolean;

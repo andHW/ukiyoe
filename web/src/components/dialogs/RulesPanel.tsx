@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import { tokens } from "../theme";
+import { tokens } from "../../theme";
 
 const Panel = styled("div")({
   background: tokens.colors.bgCard,

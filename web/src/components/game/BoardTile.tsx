@@ -1,10 +1,10 @@
 // Board tile — single tile with all layout variants, tokens, and state styles
 import { styled, keyframes } from "@mui/material/styles";
-import type { Tile, Poem as PoemType } from "../engine/types";
-import { Poem } from "../engine/types";
-import { PLANT_EMOJI, POEM_EMOJI, BIRD_VARIANTS } from "../engine/constants";
-import { getTileVariant } from "../utils/tileVariant";
-import { tokens } from "../theme";
+import type { Tile, Poem as PoemType } from "../../engine/types";
+import { Poem } from "../../engine/types";
+import { PLANT_EMOJI, POEM_EMOJI, BIRD_VARIANTS } from "../../engine/constants";
+import { getTileVariant } from "../../utils/tileVariant";
+import { tokens } from "../../theme";
 
 // ---------- Keyframes ----------
 

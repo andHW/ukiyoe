@@ -7,8 +7,8 @@ import TimerIcon from "@mui/icons-material/Timer";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import CasinoIcon from "@mui/icons-material/Casino";
 import UndoIcon from "@mui/icons-material/Undo";
-import type { Difficulty, GameMode } from "../engine/types";
-import { tokens } from "../theme";
+import type { Difficulty, GameMode } from "../../engine/types";
+import { tokens } from "../../theme";
 
 const outlineSx = { 
   borderColor: tokens.colors.bgBoardDark, 

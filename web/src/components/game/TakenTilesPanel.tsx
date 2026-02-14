@@ -1,10 +1,10 @@
 // Taken tiles panel — mini tile history below the board
 import { styled, keyframes } from "@mui/material/styles";
-import type { Tile } from "../engine/types";
-import { Poem } from "../engine/types";
-import { PLANT_EMOJI, POEM_EMOJI, BIRD_VARIANTS } from "../engine/constants";
-import { getTileVariant } from "../utils/tileVariant";
-import { tokens } from "../theme";
+import type { Tile } from "../../engine/types";
+import { Poem } from "../../engine/types";
+import { PLANT_EMOJI, POEM_EMOJI, BIRD_VARIANTS } from "../../engine/constants";
+import { getTileVariant } from "../../utils/tileVariant";
+import { tokens } from "../../theme";
 
 // ---------- Keyframes ----------
 

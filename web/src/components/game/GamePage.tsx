@@ -10,25 +10,25 @@ import Container from "@mui/material/Container";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
-import { useGame } from "../hooks/useGame";
-import { useClock } from "../hooks/useClock";
-import { useAI } from "../hooks/useAI";
-import { useSettings } from "../hooks/useSettings";
-import { useUIState } from "../hooks/useUIState";
-import { parseBoardCode } from "../utils/boardCode";
-import type { Difficulty, GameMode } from "../engine/types";
-import { tokens } from "../theme";
+import { useGame } from "../../hooks/useGame";
+import { useClock } from "../../hooks/useClock";
+import { useAI } from "../../hooks/useAI";
+import { useSettings } from "../../hooks/useSettings";
+import { useUIState } from "../../hooks/useUIState";
+import { parseBoardCode } from "../../utils/boardCode";
+import type { Difficulty, GameMode } from "../../engine/types";
+import { tokens } from "../../theme";
 
 // Components
-import AppHeader from "./AppHeader";
+import AppHeader from "../layout/AppHeader";
 import GameControls from "./GameControls";
 import PlayerBar from "./PlayerBar";
 import GameBoard from "./GameBoard";
 import TakenTilesPanel, { type HistoryEntry } from "./TakenTilesPanel";
 import BoardCodeBar from "./BoardCodeBar";
-import RulesPanel from "./RulesPanel";
-import ClockDialog from "./ClockDialog";
-import SettingsDialog from "./SettingsDialog";
+import RulesPanel from "../dialogs/RulesPanel";
+import ClockDialog from "../dialogs/ClockDialog";
+import SettingsDialog from "../dialogs/SettingsDialog";
 import WinOverlay from "./WinOverlay";
 
 // Layout constants
@@ -301,7 +301,7 @@ export default function GamePage() {
       <SettingsDialog
         open={ui.showSettingsDialog}
         settings={settings}
-        onUpdate={updateSetting}
+        onUpdate={(key, value) => updateSetting(key, value)}
         onClose={() => ui.setShowSettingsDialog(false)}
       />
 

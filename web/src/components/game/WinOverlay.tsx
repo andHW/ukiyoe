@@ -7,8 +7,8 @@ import Stack from "@mui/material/Stack";
 import CloseIcon from "@mui/icons-material/Close";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import CasinoIcon from "@mui/icons-material/Casino";
-import type { GameState, GameMode } from "../engine/types";
-import { tokens } from "../theme";
+import type { GameState, GameMode } from "../../engine/types";
+import { tokens } from "../../theme";
 
 // ---------- Keyframes ----------
 

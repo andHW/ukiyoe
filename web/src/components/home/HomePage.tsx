@@ -5,20 +5,11 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import PersonIcon from "@mui/icons-material/Person";
-import SmartToyIcon from "@mui/icons-material/SmartToy";
 
-import AppHeader from "./AppHeader";
-import AppFooter from "./AppFooter";
-import { tokens } from "../theme";
+import AppHeader from "../layout/AppHeader";
+import AppFooter from "../layout/AppFooter";
+import SideSelectionDialog from "../dialogs/SideSelectionDialog";
+import { tokens } from "../../theme";
 
 // Rules text content for the home page
 const RULES_TEXT = [
@@ -101,54 +92,11 @@ export default function HomePage() {
 
       <AppFooter />
 
-      {/* Side Selection Dialog */}
-      <Dialog 
+      <SideSelectionDialog 
         open={showSideDialog} 
         onClose={() => setShowSideDialog(false)}
-        PaperProps={{
-          sx: {
-            bgcolor: tokens.colors.bgSecondary,
-            color: tokens.colors.textPrimary,
-            borderRadius: tokens.radii.lg,
-            border: `1px solid ${tokens.colors.bgBoard}`,
-            minWidth: 300
-          }
-        }}
-      >
-        <DialogTitle sx={{ textAlign: "center", borderBottom: `1px solid ${tokens.colors.bgBoardDark}` }}>
-          Choose Your Side
-        </DialogTitle>
-        <DialogContent sx={{ p: 0 }}>
-          <List>
-            <ListItem disablePadding divider>
-              <ListItemButton onClick={() => handleSideSelect("p2")} sx={{ py: 3 }}>
-                <ListItemIcon>
-                   <PersonIcon sx={{ color: tokens.colors.p1Color, fontSize: 32 }} />
-                </ListItemIcon>
-                <ListItemText 
-                  primary="Play as First (Sente)" 
-                  secondary="You play Red, AI plays Black"
-                  primaryTypographyProps={{ variant: "h6", color: tokens.colors.textPrimary }}
-                  secondaryTypographyProps={{ sx: { color: tokens.colors.textMuted } }}
-                />
-              </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton onClick={() => handleSideSelect("p1")} sx={{ py: 3 }}>
-                <ListItemIcon>
-                   <SmartToyIcon sx={{ color: tokens.colors.p2Color, fontSize: 32 }} />
-                </ListItemIcon>
-                <ListItemText 
-                  primary="Play as Second (Gote)" 
-                  secondary="AI plays Red, You play Black"
-                  primaryTypographyProps={{ variant: "h6", color: tokens.colors.textPrimary }}
-                  secondaryTypographyProps={{ sx: { color: tokens.colors.textMuted } }}
-                />
-              </ListItemButton>
-            </ListItem>
-          </List>
-        </DialogContent>
-      </Dialog>
+        onSelect={handleSideSelect}
+      />
     </Container>
   );
 }

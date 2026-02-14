@@ -8,8 +8,8 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Tooltip from "@mui/material/Tooltip";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import PublishIcon from "@mui/icons-material/Publish";
-import { tokens } from "../theme";
-import type { GameMode } from "../engine/types";
+import { tokens } from "../../theme";
+import type { GameMode } from "../../engine/types";
 
 interface BoardCodeBarProps {
   boardCode: number;

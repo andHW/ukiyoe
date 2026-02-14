@@ -2,10 +2,10 @@
 import { styled, keyframes } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import type { Player, GameMode } from "../engine/types";
-import { PLAYER_EMOJI } from "../engine/constants";
-import { tokens } from "../theme";
-import { formatTime } from "../utils/formatting";
+import type { Player, GameMode } from "../../engine/types";
+import { PLAYER_EMOJI } from "../../engine/constants";
+import { tokens } from "../../theme";
+import { formatTime } from "../../utils/formatting";
 
 const pulse = keyframes`
   0%, 100% { opacity: 1; }
