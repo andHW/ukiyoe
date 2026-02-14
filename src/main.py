@@ -16,6 +16,7 @@ import argparse
 import math
 import os
 import random
+import signal
 import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
@@ -30,7 +31,12 @@ TILES: list[Tile] = [(p, s) for p in range(4) for s in range(4)]  # 16 tiles
 
 
 def _worker_init() -> None:
-    """Re-seed random in each worker process to avoid duplicate sequences."""
+    """
+    Initialize worker process:
+    1. Ignore SIGINT so only the main process handles Ctrl+C.
+    2. Re-seed random to avoid duplicate sequences.
+    """
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
     random.seed(os.getpid() ^ int(time.monotonic_ns()))
 
 
@@ -187,8 +193,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    # Suppress noisy tracebacks from worker processes on Ctrl+C
-    import signal
-    signal.signal(signal.SIGINT, signal.SIG_DFL)
     main()
 
