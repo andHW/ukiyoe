@@ -115,39 +115,46 @@ const legalHighlightSx = {
 
 interface BoardTileProps {
   tile: Tile;
-  index: number;
-  isTaken: boolean;
-  isP1: boolean;
-  isP2: boolean;
-  isWin: boolean;
-  isLegalHinted: boolean; // legal + hints enabled
-  isLegalHidden: boolean; // legal + hints disabled
-  canInteract: boolean;
-  overlapping: boolean;
-  noBlur: boolean;
-  simpleBirds: boolean;
-  playerEmoji: { p1: string; p2: string };
-  onClick: (index: number) => void;
+  index?: number;
+  isTaken?: boolean;
+  isP1?: boolean;
+  isP2?: boolean;
+  isWin?: boolean;
+  isLegalHinted?: boolean; // legal + hints enabled
+  isLegalHidden?: boolean; // legal + hints disabled
+  canInteract?: boolean;
+  overlapping?: boolean;
+  noBlur?: boolean;
+  simpleBirds?: boolean;
+  playerEmoji?: { p1: string; p2: string };
+  onClick?: (index: number) => void;
+  // New prop to force a specific variant style (for falling tiles)
+  forceVariant?: string;
+  style?: React.CSSProperties;
 }
 
 export default function BoardTile({
   tile,
-  index,
-  isTaken,
-  isP1,
-  isP2,
-  isWin,
-  isLegalHinted,
-  canInteract,
-  overlapping,
-  noBlur,
-  simpleBirds,
-  playerEmoji,
+  index = 0,
+  isTaken = false,
+  isP1 = false,
+  isP2 = false,
+  isWin = false,
+  isLegalHinted = false,
+  canInteract = false,
+  overlapping = true,
+  noBlur = false,
+  simpleBirds = false,
+  playerEmoji = { p1: "🔴", p2: "⚫" },
   onClick,
+  forceVariant,
+  style,
 }: BoardTileProps) {
-  const clickable = canInteract && (isLegalHinted || !isTaken);
-  const variant = overlapping ? getTileVariant(tile.plant, tile.poem) : null;
-  const vStyles = variant ? variantStyles[variant] : null;
+  const clickable = canInteract && (isLegalHinted || !isTaken) && !!onClick;
+  
+  // Use forced variant if provided, otherwise calculate based on overlapping logic
+  const variantKey = forceVariant || (overlapping ? getTileVariant(tile.plant, tile.poem) : null);
+  const vStyles = variantKey ? variantStyles[variantKey] : null;
 
   const noBlurFilter = { filter: "none" };
   const plantStyle: React.CSSProperties = {
@@ -169,7 +176,8 @@ export default function BoardTile({
   return (
     <TileRoot
       clickable={clickable}
-      onClick={() => clickable && onClick(index)}
+      onClick={() => clickable && onClick?.(index)}
+      style={style}
       sx={{
         ...(isTaken && { cursor: "default" }),
         ...(isWin && winCellSx),
