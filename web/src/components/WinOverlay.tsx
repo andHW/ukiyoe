@@ -60,7 +60,8 @@ interface WinOverlayProps {
   clockExpired: boolean;
   clockExpiredPlayer: "p1" | "p2" | null;
   onDismiss: () => void;
-  onPlayAgain: () => void;
+  onRestartSame: () => void;
+  onRestartRandom: () => void;
 }
 
 export default function WinOverlay({
@@ -69,7 +70,8 @@ export default function WinOverlay({
   clockExpired,
   clockExpiredPlayer,
   onDismiss,
-  onPlayAgain,
+  onRestartSame,
+  onRestartRandom,
 }: WinOverlayProps) {
   // Determine display strings
   let emoji: string;
@@ -108,21 +110,36 @@ export default function WinOverlay({
         <Typography variant="body1" sx={{ color: tokens.colors.textSecondary, mb: 3 }}>
           {subtitle}
         </Typography>
-        <Stack direction="row" spacing={2} justifyContent="center">
+
+        <Typography variant="subtitle1" sx={{ color: tokens.colors.textPrimary, mb: 1.5, fontWeight: 600 }}>
+          Play Again
+        </Typography>
+
+        <Stack spacing={2}>
+          <Stack direction="row" spacing={1.5} justifyContent="center">
+            <Button
+              variant="contained" 
+              onClick={onRestartSame}
+              sx={{ flex: 1, color: tokens.colors.bgPrimary, bgcolor: tokens.colors.accentCyan, '&:hover': { bgcolor: tokens.colors.accentCyanDark } }}
+            >
+              Same Board
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={onRestartRandom}
+              sx={{ flex: 1, color: tokens.colors.bgPrimary }}
+            >
+              New Board
+            </Button>
+          </Stack>
+          
           <Button
-            variant="outlined"
+            variant="text"
             onClick={onDismiss}
-            sx={{ borderColor: tokens.colors.bgBoardDark, color: tokens.colors.textPrimary }}
+            sx={{ color: tokens.colors.textMuted }}
           >
             View Board
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={onPlayAgain}
-            sx={{ color: tokens.colors.bgPrimary }}
-          >
-            Play Again
           </Button>
         </Stack>
       </Modal>

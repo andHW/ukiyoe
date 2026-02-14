@@ -18,6 +18,8 @@ export const tokens = {
     accentTerracotta: "#c45a3c",
     accentWarm: "#d4956a",
     accentGreen: "#5bff92",
+    accentCyan: "#38bdf8",
+    accentCyanDark: "#0ea5e9",
 
     p1Color: "#c45a3c",
     p1Bg: "rgba(196, 90, 60, 0.85)",

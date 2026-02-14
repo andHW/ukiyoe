@@ -298,7 +298,8 @@ export default function GamePage() {
           clockExpired={clock.isExpired}
           clockExpiredPlayer={clock.expiredPlayer}
           onDismiss={() => ui.setShowWinOverlay(false)}
-          onPlayAgain={() => handleNewGame(gameMode)}
+          onRestartSame={() => handleNewGame(gameMode, state.boardCode)}
+          onRestartRandom={() => handleNewGame(gameMode)}
         />
       )}
     </Box>
