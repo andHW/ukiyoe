@@ -341,86 +341,7 @@ body {
 }
 
 /* ========== History & Taken Panels ========== */
-
-.history-panel {
-  background: var(--bg-card);
-  border-radius: var(--radius-md);
-  padding: 10px;
-  width: 150px; 
-  min-height: 200px;
-  max-height: 360px;
-  overflow-y: auto;
-  border: 1px solid var(--bg-board-dark);
-}
-
-.history-title {
-  font-family: var(--font-display);
-  font-size: 0.95rem;
-  color: var(--text-secondary);
-  text-align: center;
-  margin-bottom: 8px;
-  letter-spacing: 1px;
-}
-
-.history-list {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.history-empty {
-  color: var(--text-muted);
-  font-size: 0.75rem;
-  text-align: center;
-  padding: 16px 0;
-  width: 100%; /* Force width to enable center alignment */
-}
-
-.history-entry {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 6px;
-  border-radius: var(--radius-sm);
-  background: var(--bg-secondary);
-  font-size: 0.8rem;
-  animation: historySlideIn 0.35s ease-out;
-  border-left: 3px solid transparent;
-}
-
-.history-entry.p1 {
-  border-left-color: var(--p1-color);
-}
-
-.history-entry.p2 {
-  border-left-color: var(--text-muted);
-}
-
-.history-entry.latest {
-  background: rgba(232, 168, 56, 0.08);
-  box-shadow: 0 0 6px rgba(232, 168, 56, 0.08);
-}
-
-.history-turn {
-  color: var(--text-muted);
-  font-size: 0.7rem;
-  min-width: 16px;
-  font-weight: 600;
-  font-family: var(--font-sans);
-}
-
-.history-player-emoji {
-  font-size: 1rem;
-}
-
-.history-tile-emoji {
-  font-size: 0.9rem;
-}
-
-/* Taken Tiles Grid */
-/* .taken-panel and .taken-grid styled inline in App.tsx */
-
-/* Scaled-down tile wrapper */
+/* Taken Tiles - Mini version */
 .mini-tile {
   position: relative;
   width: 44px; 
@@ -430,6 +351,18 @@ body {
   box-shadow: 0 1px 2px rgba(0,0,0,0.2);
   animation: fadeScaleIn 0.3s ease-out;
   background: var(--tile-bg); /* Background on container */
+
+  /* Player indicator border */
+  border-bottom: 4px solid transparent;
+  box-sizing: content-box; /* Maintain 44x44 inner size */
+}
+
+/* Player color borders */
+.mini-tile.p1-taken {
+  border-bottom-color: var(--p1-color);
+}
+.mini-tile.p2-taken {
+  border-bottom-color: var(--p2-color);
 }
 
 /* Inner tile - rendered at near-full size then scaled down */
@@ -460,6 +393,14 @@ body {
   }
 }
 
+/* Empty history message */
+.history-empty {
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+  width: 100%;
+  padding: 10px;
+}    
 /* Scrollbar */
 .history-panel::-webkit-scrollbar {
   width: 4px;

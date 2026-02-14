@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect } from "react";
 import "./index.css";
 import { useGame } from "./hooks/useGame";
 import { useClock } from "./hooks/useClock";
@@ -25,7 +25,6 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import useMediaQuery from "@mui/material/useMediaQuery";
 
 // Icons
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
@@ -100,9 +99,10 @@ export default function App() {
   const clock = useClock(clockTime);
 
   // UI state
+
   const [showRules, setShowRules] = useState(false);
-  const [showHistory, setShowHistory] = useState(false);
-  // Taken tiles are now always shown
+  const [showLastTakenOnly, setShowLastTakenOnly] = useState(false);
+  // Taken tiles are now always shown (replacing history)
   
   const [boardCodeInput, setBoardCodeInput] = useState("");
   const [copied, setCopied] = useState(false);
@@ -116,11 +116,7 @@ export default function App() {
   const [simpleBirds, setSimpleBirds] = useState(false);
   const [overlappingTiles, setOverlappingTiles] = useState(true);
 
-  const historyEndRef = useRef<HTMLDivElement>(null);
-  const historyPanelRef = useRef<HTMLDivElement>(null); // Ref for scroll container
-  const isMobile = useMediaQuery("(max-width:900px)"); // Breakpoint for layout shift
 
-  // AI move callback
   const onAIMove = useCallback(
     (move: number) => {
       makeMove(move);
@@ -176,12 +172,10 @@ export default function App() {
 
   // Auto-scroll history to bottom
   // Auto-scroll history to bottom (container only, no viewport scroll)
+  // Auto-scroll history to bottom - REMOVED (using internal panel scrolling if needed, but grid usually minimal)
   useEffect(() => {
-    if (showHistory && historyPanelRef.current) {
-      const panel = historyPanelRef.current;
-      panel.scrollTo({ top: panel.scrollHeight, behavior: "smooth" });
-    }
-  }, [state.moveHistory.length, showHistory]);
+     // No-op for new grid layout
+  }, [state.moveHistory.length]);
 
   const handleNewGame = (mode: GameMode, code?: number) => {
     newGame(mode, code);
@@ -238,8 +232,7 @@ export default function App() {
     return { moveIdx, tile, player, turn };
   });
 
-  // Calculate taken tiles for display
-  const takenTiles = state.board.filter((_, i) => isTaken(i));
+
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -456,24 +449,28 @@ export default function App() {
                     </div>
                 </div>
 
-                {/* Taken Tiles Panel (Below Board) */}
+                {/* Taken Tiles Panel (Below Board) - Acts as History */}
                 <div className="taken-panel" style={{ width: "100%", maxWidth: "450px", background: "var(--bg-card)", borderRadius: "var(--radius-md)", padding: "12px", border: "1px solid var(--bg-board-dark)" }}>
                     <div className="history-title" style={{ fontSize: "0.9rem", color: "var(--text-muted)", marginBottom: "8px" }}>
-                        Taken Tiles ({takenTiles.length})
+                        {showLastTakenOnly ? "Last Taken Tile" : `Taken Tiles (${moveHistoryEntries.length})`}
                     </div>
                     <div className="taken-grid" style={{ display: "flex", flexWrap: "wrap", gap: "12px", justifyContent: "center", minHeight: "60px" }}>
-                        {takenTiles.length === 0 && (
+                        {moveHistoryEntries.length === 0 && (
                             <div className="history-empty" style={{ width: "100%" }}>No taken tiles yet</div>
                         )}
-                        {takenTiles.map((tile, i) => {
+                        {(showLastTakenOnly ? moveHistoryEntries.slice(-1) : moveHistoryEntries).map((entry, i) => {
+                             const tile = entry.tile;
                              const classes = ["tile", "mini-tile-inner"];
                              if (overlappingTiles) {
                                classes.push("overlapping");
                                classes.push(getTileVariant(tile.plant, tile.poem));
                              }
-                             // We render a scaled-down version of the full tile structure
+                             
+                             // Player color border class
+                             const playerClass = entry.player === "p1" ? "p1-taken" : "p2-taken";
+
                              return (
-                            <div key={i} className="mini-tile">
+                            <div key={i} className={`mini-tile ${playerClass}`}>
                                 <div className={classes.join(" ")}>
                                     <span className="tile-emoji-plant">{PLANT_EMOJI[tile.plant]}</span>
                                     <span className="tile-emoji-poem">
@@ -490,48 +487,7 @@ export default function App() {
 
             </div>
 
-             {/* Move History (Right Overlay on Desktop) */}
-             <Collapse in={showHistory} orientation="horizontal" timeout={300} 
-                sx={{ 
-                    position: isMobile ? "static" : "absolute", 
-                    right: 0, 
-                    top: 0,
-                    height: "100%", /* match board height or just flow naturally */
-                    zIndex: 2,
-                    mt: isMobile ? 2 : 0
-                }}
-             >
-                <div 
-                    ref={historyPanelRef}
-                    className="history-panel" 
-                    style={{ 
-                    height: isMobile ? "auto" : "100%", 
-                    maxHeight: isMobile ? "200px" : "500px",
-                    marginLeft: isMobile ? 0 : "20px" 
-                }}>
-                  <div className="history-title">Moves</div>
-                  <div className="history-list">
-                    {moveHistoryEntries.length === 0 && (
-                      <div className="history-empty">No moves yet</div>
-                    )}
-                    {moveHistoryEntries.map((entry, i) => (
-                      <div
-                        key={i}
-                        className={`history-entry ${entry.player} ${i === moveHistoryEntries.length - 1 ? "latest" : ""}`}
-                      >
-                        <span className="history-turn">{i + 1}</span>
-                        <span className="history-player-emoji">
-                          {entry.player === "p1" ? PLAYER_EMOJI.p1 : PLAYER_EMOJI.p2}
-                        </span>
-                        <span className="history-tile-emoji">
-                          {PLANT_EMOJI[entry.tile.plant]}{POEM_EMOJI[entry.tile.poem]}
-                        </span>
-                      </div>
-                    ))}
-                    <div ref={historyEndRef} />
-                  </div>
-                </div>
-              </Collapse>
+             {/* Move History Removed */}
 
         </div>
 
@@ -729,16 +685,6 @@ export default function App() {
               <FormControlLabel
                 control={
                   <Switch
-                    checked={showHistory}
-                    onChange={(e) => setShowHistory(e.target.checked)}
-                    color="primary"
-                  />
-                }
-                label="Show Move History"
-              />
-              <FormControlLabel
-                control={
-                  <Switch
                     checked={simpleBirds}
                     onChange={(e) => setSimpleBirds(e.target.checked)}
                     color="primary"
@@ -749,12 +695,23 @@ export default function App() {
               <FormControlLabel
                 control={
                   <Switch
+                    checked={showLastTakenOnly}
+                    onChange={(e) => setShowLastTakenOnly(e.target.checked)}
+                    color="primary"
+                  />
+                }
+                label="Show Last Taken Tile Only"
+              />
+
+              <FormControlLabel
+                control={
+                  <Switch
                     checked={overlappingTiles}
                     onChange={(e) => setOverlappingTiles(e.target.checked)}
                     color="primary"
                   />
                 }
-                label="Artistic Overlap Tiles"
+                label="Artistic Tiles"
               />
           </DialogContent>
           <DialogActions sx={{ justifyContent: "center", pb: 2 }}>
