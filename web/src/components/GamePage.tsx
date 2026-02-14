@@ -119,7 +119,7 @@ export default function GamePage() {
     const code = parseBoardCode(ui.boardCodeInput);
     if (code !== null) {
       handleNewGame(gameMode, code);
-      ui.setBoardCodeInput("");
+
     }
   };
 
