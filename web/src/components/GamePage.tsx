@@ -5,7 +5,10 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import HomeIcon from "@mui/icons-material/Home";
 import SettingsIcon from "@mui/icons-material/Settings";
+import SmartToyIcon from "@mui/icons-material/SmartToy";
 import Container from "@mui/material/Container";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 import { useGame } from "../hooks/useGame";
 import { useClock } from "../hooks/useClock";
@@ -43,11 +46,22 @@ export default function GamePage() {
   const navigate = useNavigate();
   // Get mode from URL, default to local if invalid
   const initialMode = (searchParams.get("mode") as GameMode) || "local";
+  const initialAI = (searchParams.get("ai") as "p1" | "p2") || "p2";
   
   // Game hooks
   const { state, legalMoves, gameMode, makeMove, newGame, undoMove } = useGame(initialMode);
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
-  const [aiPlayer, setAiPlayer] = useState<"p1" | "p2">("p2");
+  const [aiPlayer, setAiPlayer] = useState<"p1" | "p2">(initialAI);
+  const [showTip, setShowTip] = useState(false);
+
+  // Show tip on mount for vs-ai
+  useEffect(() => {
+    if (initialMode === "vs-ai") {
+      const timer = setTimeout(() => setShowTip(true), 1000);
+      const hideTimer = setTimeout(() => setShowTip(false), 6000);
+      return () => { clearTimeout(timer); clearTimeout(hideTimer); };
+    }
+  }, [initialMode]);
 
   // Clock
   const [clockTime, setClockTime] = useState(120);
@@ -302,6 +316,27 @@ export default function GamePage() {
           onRestartRandom={() => handleNewGame(gameMode)}
         />
       )}
+
+      <Snackbar 
+        open={showTip} 
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        sx={{ bottom: { xs: 80, sm: 40 } }}
+      >
+        <Alert 
+          severity="info" 
+          variant="filled"
+          onClose={() => setShowTip(false)}
+          sx={{ 
+            bgcolor: tokens.colors.bgCard, 
+            color: tokens.colors.textPrimary,
+            border: `1px solid ${tokens.colors.accentAmber}`,
+            alignItems: "center"
+          }}
+          icon={<SmartToyIcon fontSize="small" sx={{ color: tokens.colors.accentAmber }} />}
+        >
+          Tip: Tap the 🤖 icon to switch sides at any time.
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
