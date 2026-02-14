@@ -12,3 +12,6 @@ data/
 # Editor
 .vscode/
 .idea/
+
+# Compiled C extensions
+*.so
