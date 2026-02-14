@@ -1,18 +1,22 @@
 // Core game types for Ukiyoe
 
-export enum Plant {
-  Maple = 0,
-  Cherry = 1,
-  Pine = 2,
-  Iris = 3,
-}
+export const Plant = {
+  Maple: 0,
+  Cherry: 1,
+  Pine: 2,
+  Iris: 3,
+} as const;
 
-export enum Poem {
-  Sun = 0,
-  Bird = 1,
-  Rain = 2,
-  Cloud = 3,
-}
+export type Plant = (typeof Plant)[keyof typeof Plant];
+
+export const Poem = {
+  Sun: 0,
+  Bird: 1,
+  Rain: 2,
+  Cloud: 3,
+} as const;
+
+export type Poem = (typeof Poem)[keyof typeof Poem];
 
 export interface Tile {
   plant: Plant;
@@ -21,14 +25,16 @@ export interface Tile {
 
 export type Player = "p1" | "p2";
 
-export enum WinMethod {
-  Row = "Row",
-  Column = "Column",
-  MainDiagonal = "Main Diagonal",
-  AntiDiagonal = "Anti Diagonal",
-  Square = "Square",
-  Blockade = "Blockade",
-}
+export const WinMethod = {
+  Row: "Row",
+  Column: "Column",
+  MainDiagonal: "Main Diagonal",
+  AntiDiagonal: "Anti Diagonal",
+  Square: "Square",
+  Blockade: "Blockade",
+} as const;
+
+export type WinMethod = (typeof WinMethod)[keyof typeof WinMethod];
 
 export type GameMode = "local" | "vs-ai";
 

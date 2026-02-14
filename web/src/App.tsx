@@ -34,6 +34,7 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import CloseIcon from "@mui/icons-material/Close";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import SettingsIcon from "@mui/icons-material/Settings";
+import Link from "@mui/material/Link";
 
 const darkTheme = createTheme({
   palette: {
@@ -556,21 +557,23 @@ export default function App() {
         </Button>
         <Collapse in={showRules}>
           <div className="rules-panel">
-            <h3>Rules</h3>
-            <ol>
+            <Typography variant="h6" sx={{ fontFamily: "'Potta One', cursive", color: "var(--text-primary)", mb: 1 }}>
+              Rules
+            </Typography>
+            <Box component="ol" sx={{ pl: 2, m: 0, color: "var(--text-secondary)", fontSize: "0.9rem", lineHeight: 1.6 }}>
               <li>The board is a 4×4 grid of unique tiles, each with a <strong>Plant</strong> and a <strong>Poem</strong>.</li>
               <li>Player 1 starts by placing a token on any <strong>edge tile</strong>.</li>
               <li>Each subsequent move must match the <strong>Plant or Poem</strong> of the last tile played.</li>
               <li>
                 Win by completing:
-                <ul>
+                <Box component="ul" sx={{ pl: 2, my: 0.5 }}>
                   <li>A <strong>row</strong>, <strong>column</strong>, or <strong>diagonal</strong> of 4 tokens</li>
                   <li>A <strong>2×2 square</strong> of tokens</li>
                   <li>A <strong>blockade</strong> — your opponent has no legal moves</li>
-                </ul>
+                </Box>
               </li>
               <li>If all tiles are placed with no winner, it's a <strong>draw</strong>.</li>
-            </ol>
+            </Box>
           </div>
         </Collapse>
 
@@ -578,13 +581,15 @@ export default function App() {
         <Dialog
           open={showClockDialog}
           onClose={() => setShowClockDialog(false)}
-          PaperProps={{
-            sx: {
-              background: "var(--bg-secondary)",
-              border: "1px solid var(--bg-board)",
-              borderRadius: "var(--radius-lg)",
-              minWidth: 300,
-              p: 1
+          slotProps={{
+            paper: {
+              sx: {
+                background: "var(--bg-secondary)",
+                border: "1px solid var(--bg-board)",
+                borderRadius: "var(--radius-lg)",
+                minWidth: 300,
+                p: 1
+              },
             },
           }}
         >
@@ -600,7 +605,9 @@ export default function App() {
               value={customMinutes}
               onChange={(e) => setCustomMinutes(e.target.value)}
               fullWidth
-              inputProps={{ min: 1, max: 60, style: { textAlign: "center" } }}
+              slotProps={{
+                htmlInput: { min: 1, max: 60, style: { textAlign: "center" } }
+              }}
               sx={{
                 input: { color: "#f5e6d3" },
                 "& .MuiOutlinedInput-root": {
@@ -638,13 +645,15 @@ export default function App() {
         <Dialog
           open={showSettingsDialog}
           onClose={() => setShowSettingsDialog(false)}
-          PaperProps={{
-            sx: {
-              background: "var(--bg-secondary)",
-              border: "1px solid var(--bg-board)",
-              borderRadius: "var(--radius-lg)",
-              minWidth: 280,
-              p: 1
+          slotProps={{
+            paper: {
+              sx: {
+                background: "var(--bg-secondary)",
+                border: "1px solid var(--bg-board)",
+                borderRadius: "var(--radius-lg)",
+                minWidth: 280,
+                p: 1
+              },
             },
           }}
         >
@@ -758,9 +767,15 @@ export default function App() {
         <Box component="footer" sx={{ textAlign: "center", mt: 4, mb: 2, color: "var(--text-muted)", fontSize: "0.8rem" }}>
           <Typography variant="caption" display="block" sx={{ fontFamily: "'Potta One', cursive" }}>
             Inspired by{" "}
-            <a href="https://boardgamegeek.com/boardgame/125311/okiya" target="_blank" rel="noopener" style={{ color: "inherit" }}>
+            <Link 
+              href="https://boardgamegeek.com/boardgame/125311/okiya" 
+              target="_blank" 
+              rel="noopener" 
+              color="inherit"
+              underline="hover"
+            >
               Niya/Okiya
-            </a>{" "}
+            </Link>{" "}
             by Bruno Cathala
           </Typography>
           <Typography variant="caption" display="block" sx={{ fontFamily: "'Potta One', cursive" }}>
