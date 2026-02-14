@@ -16,7 +16,7 @@ The goal was to create both a polished playable version and a "perfect play" eng
 2. **Components:** 16 tiles. Each tile has a Plant (Maple, Cherry, Pine, Iris) and a Poem (Sun, Bird, Rain, Cloud).
 3. **Setup:** The 16 tiles are randomly arranged on the grid at the start.
 4. **Movement:**
-   - Player 1 _must_ choose a tile on the periphery (edge) for the first move.
+   - Player 1 *must* choose a tile on the periphery (edge) for the first move.
    - Subsequent moves must match the Plant OR Poem of the previous tile.
 5. **Win Conditions:**
    - Create a line of 4 (Horizontal, Vertical, Diagonal).
