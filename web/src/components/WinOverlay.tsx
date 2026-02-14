@@ -115,28 +115,29 @@ export default function WinOverlay({
           Play Again
         </Typography>
 
-        <Stack spacing={2}>
-          <Stack direction="row" spacing={1.5} justifyContent="center">
-            <Button
-              variant="contained" 
-              onClick={onRestartSame}
-              sx={{ flex: 1, color: tokens.colors.bgPrimary, bgcolor: tokens.colors.accentCyan, '&:hover': { bgcolor: tokens.colors.accentCyanDark } }}
-            >
-              Same Board
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={onRestartRandom}
-              sx={{ flex: 1, color: tokens.colors.bgPrimary }}
-            >
-              New Board
-            </Button>
-          </Stack>
+        <Stack spacing={2} sx={{ width: "100%" }}>
+          <Button
+            variant="contained" 
+            onClick={onRestartSame}
+            fullWidth
+            sx={{ color: tokens.colors.bgPrimary, bgcolor: tokens.colors.accentCyan, '&:hover': { bgcolor: tokens.colors.accentCyanDark } }}
+          >
+            Same Board
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={onRestartRandom}
+            fullWidth
+            sx={{ color: tokens.colors.bgPrimary }}
+          >
+            New Board
+          </Button>
           
           <Button
             variant="text"
             onClick={onDismiss}
+            fullWidth
             sx={{ color: tokens.colors.textMuted }}
           >
             View Board
