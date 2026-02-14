@@ -219,7 +219,8 @@ export default function GamePage() {
           clockTime={clockTime}
           // Unlimited undo: just check if there is history
           canUndo={state.moveHistory.length > 0} 
-          onNewGame={() => handleNewGame(gameMode)}
+          onRestartRandom={() => handleNewGame(gameMode)}
+          onRestartSame={() => handleNewGame(gameMode, state.boardCode)}
           onCycleDifficulty={handleCycleDifficulty}
           onToggleClock={handleToggleClock}
           onUndo={handleUndo}

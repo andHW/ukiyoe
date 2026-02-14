@@ -5,6 +5,7 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import TimerIcon from "@mui/icons-material/Timer";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import CasinoIcon from "@mui/icons-material/Casino";
 import UndoIcon from "@mui/icons-material/Undo";
 import type { Difficulty, GameMode } from "../engine/types";
 import { tokens } from "../theme";
@@ -23,7 +24,8 @@ interface GameControlsProps {
   clockEnabled: boolean;
   clockTime: number;
   canUndo: boolean;
-  onNewGame: () => void;
+  onRestartRandom: () => void;
+  onRestartSame: () => void;
   onCycleDifficulty: () => void;
   onToggleClock: () => void;
   onUndo: () => void;
@@ -34,7 +36,8 @@ export default function GameControls({
   difficulty,
   clockEnabled,
   canUndo,
-  onNewGame,
+  onRestartRandom,
+  onRestartSame,
   onCycleDifficulty,
   onToggleClock,
   onUndo,
@@ -48,7 +51,7 @@ export default function GameControls({
         
         {/* Difficulty Button (VS AI only) */}
         {gameMode === "vs-ai" && (
-          <Box sx={{ flex: 1 }}>
+          <Box sx={{ flex: 1.5 }}>
             <Button variant="outlined" onClick={onCycleDifficulty} sx={outlineSx}>
               {diffLabel}
             </Button>
@@ -57,7 +60,7 @@ export default function GameControls({
 
         {/* Clock Toggle (Local only) */}
         {gameMode === "local" && (
-            <Box sx={{ flex: 1 }}>
+            <Box sx={{ flex: 1.5 }}>
             <Button
               variant="outlined"
               onClick={onToggleClock}
@@ -69,15 +72,22 @@ export default function GameControls({
           </Box>
         )}
 
-        {/* New Game */}
+        {/* New Random Game (Dice) */}
         <Box sx={{ flex: 1 }}>
-          <Button variant="outlined" onClick={onNewGame} sx={outlineSx} aria-label="New Game">
+          <Button variant="outlined" onClick={onRestartRandom} sx={outlineSx} aria-label="New Random Game">
+            <CasinoIcon />
+          </Button>
+        </Box>
+
+        {/* Restart Same Game (Loop) */}
+        <Box sx={{ flex: 1 }}>
+          <Button variant="outlined" onClick={onRestartSame} sx={outlineSx} aria-label="Restart Board">
             <RestartAltIcon />
           </Button>
         </Box>
 
         {/* Undo */}
-        <Box sx={{ flex: 1 }}>
+        <Box sx={{ flex: 1.5 }}>
           <Button variant="outlined" onClick={onUndo} disabled={!canUndo} sx={outlineSx} aria-label="Undo">
             <UndoIcon />
           </Button>
