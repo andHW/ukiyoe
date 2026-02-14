@@ -39,7 +39,7 @@ export default function RulesPanel({ open, onToggle }: RulesPanelProps) {
         onClick={onToggle}
         endIcon={open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         size="small"
-        sx={{ color: tokens.colors.textMuted, mt: 1 }}
+        sx={{ color: tokens.colors.textMuted, mt: 1, mb: 1 }}
       >
         How to Play
       </Button>
