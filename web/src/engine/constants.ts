@@ -46,14 +46,23 @@ export const PLANT_EMOJI: Record<Plant, string> = {
   [Plant.Maple]: "🍁",
   [Plant.Cherry]: "🌸",
   [Plant.Pine]: "🌲",
-  [Plant.Iris]: "💐",
+  [Plant.Iris]: "🪻",
 };
 
 export const POEM_EMOJI: Record<Poem, string> = {
-  [Poem.Sun]: "☀️",
-  [Poem.Bird]: "🐦",
+  [Poem.RisingSun]: "☀️",
+  [Poem.Bird]: "🐦", // Default/Simple bird
   [Poem.Rain]: "🌧️",
-  [Poem.Cloud]: "☁️",
+  [Poem.PoemFlag]: "🏮",
+};
+
+// Bird variants for each Plant type (if simple mode is off)
+// Maple->Dove, Cherry->Parrot, Pine->Flamingo, Iris->Bluebird
+export const BIRD_VARIANTS: Record<Plant, string> = {
+  [Plant.Maple]: "🕊️",
+  [Plant.Cherry]: "🦜",
+  [Plant.Pine]: "🦩",
+  [Plant.Iris]: "🐦",
 };
 
 export const PLANT_NAMES: Record<Plant, string> = {
@@ -64,14 +73,14 @@ export const PLANT_NAMES: Record<Plant, string> = {
 };
 
 export const POEM_NAMES: Record<Poem, string> = {
-  [Poem.Sun]: "Sun",
+  [Poem.RisingSun]: "Rising Sun",
   [Poem.Bird]: "Bird",
-  [Poem.Rain]: "Rain",
-  [Poem.Cloud]: "Cloud",
+  [Poem.Rain]: "Rain Cloud",
+  [Poem.PoemFlag]: "Poem Flag",
 };
 
 // Player tokens
 export const PLAYER_EMOJI: Record<"p1" | "p2", string> = {
-  p1: "🧑‍🌾",
-  p2: "🧑‍🎨",
+  p1: "👺",
+  p2: "🥷",
 };

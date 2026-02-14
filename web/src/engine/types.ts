@@ -10,10 +10,10 @@ export const Plant = {
 export type Plant = (typeof Plant)[keyof typeof Plant];
 
 export const Poem = {
-  Sun: 0,
+  RisingSun: 0,
   Bird: 1,
   Rain: 2,
-  Cloud: 3,
+  PoemFlag: 3,
 } as const;
 
 export type Poem = (typeof Poem)[keyof typeof Poem];

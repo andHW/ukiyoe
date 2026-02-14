@@ -15,18 +15,18 @@
   --accent-amber: #e8a838;
   --accent-terracotta: #c45a3c;
   --accent-warm: #d4956a;
-  --accent-green: #50c878;
+  --accent-green: #5bff92;
 
   --p1-color: #c45a3c;
-  --p1-bg: rgba(196, 90, 60, 0.25);
-  --p1-glow: rgba(196, 90, 60, 0.4);
+  --p1-bg: rgba(196, 90, 60, 0.85); /* Reduced transparency */
+  --p1-glow: rgba(196, 90, 60, 0.6);
   --p2-color: #5a5a5a;
-  --p2-bg: rgba(90, 90, 90, 0.3);
-  --p2-glow: rgba(120, 120, 120, 0.35);
+  --p2-bg: rgba(40, 40, 40, 0.85); /* Reduced transparency & darker */
+  --p2-glow: rgba(120, 120, 120, 0.6);
 
   /* Legal highlight - Green when enabled */
-  --legal-highlight-color: rgba(80, 200, 120, 0.4);
-  --legal-border-color: rgba(80, 200, 120, 0.8);
+  --legal-highlight-color: var(--accent-green);
+  --legal-border-color: rgba(255, 255, 255, 0.95);
   
   --win-highlight: rgba(80, 200, 120, 0.35);
 
@@ -137,7 +137,7 @@ body {
   position: absolute;
   top: 5px;
   left: 7px;
-  font-size: 1.5rem;
+  font-size: 2rem; /* Increased from 1.5rem for better visibility when overlap is off */
   filter: blur(0.75px) saturate(1.8) brightness(1.05);
   opacity: 0.95;
   transition: opacity 0.4s ease, filter 0.4s ease;
@@ -148,55 +148,142 @@ body {
   position: absolute;
   bottom: 5px;
   right: 7px;
-  font-size: 1.3rem;
+  font-size: 1.8rem; /* Increased from 1.3rem */
   filter: blur(0.6px) saturate(1.6) brightness(1.05);
   opacity: 0.95;
   transition: opacity 0.4s ease, filter 0.4s ease;
   pointer-events: none;
 }
 
+/* ========== Overlapping Mode (Artistic) ========== */
+/* ========== Overlapping Mode (Artistic Variants) ========== */
+
+/* Base Overlapping Styles */
+.tile.overlapping .tile-emoji-plant,
+.tile.overlapping .tile-emoji-poem {
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy transition */
+}
+
+/* Variant 0: Standard (Plant Bottom, Poem Top-Right) - Classic Hanafuda */
+.tile.variant-standard .tile-emoji-plant {
+  top: auto;
+  bottom: -8px;
+  left: -4px;
+  font-size: 2.8rem;
+  opacity: 0.95;
+  transform: rotate(-10deg);
+  filter: blur(0.5px) saturate(1.2) brightness(1.05);
+  z-index: 1;
+}
+
+.tile.variant-standard .tile-emoji-poem {
+  top: 4px;
+  right: 4px;
+  bottom: auto;
+  font-size: 1.4rem;
+  z-index: 2;
+  filter: drop-shadow(0 0 4px rgba(240, 221, 197, 0.8));
+}
+
+/* Variant 1: Reversed (Poem Large Bottom, Plant Small Top-Left) */
+.tile.variant-reversed .tile-emoji-poem {
+  top: auto;
+  bottom: -6px;
+  right: -2px;
+  font-size: 2.6rem; 
+  opacity: 0.95;
+  transform: rotate(5deg);
+  filter: blur(0.5px) saturate(1.2) brightness(1.05);
+  z-index: 1;
+}
+
+.tile.variant-reversed .tile-emoji-plant {
+  top: 4px;
+  left: 4px;
+  font-size: 1.4rem;
+  z-index: 2;
+  filter: drop-shadow(0 0 4px rgba(240, 221, 197, 0.8));
+}
+
+/* Variant 2: Centered (Plant Large Center, Poem Top-Left) */
+.tile.variant-centered .tile-emoji-plant {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1.6);
+  font-size: 2.2rem;
+  opacity: 0.6; /* Increased opacity slightly for visibility */
+  filter: blur(0.5px) grayscale(0.2); /* Reduced blur */
+  z-index: 1;
+}
+
+.tile.variant-centered .tile-emoji-poem {
+  top: 4px; /* Move to top-left */
+  left: 4px;
+  right: auto;
+  bottom: auto;
+  transform: none;
+  font-size: 1.5rem;
+  z-index: 2;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+/* Variant 3: Diagonal (Plant Bottom-Left, Poem Top-Right - Balanced) */
+.tile.variant-diagonal .tile-emoji-plant {
+  top: auto;
+  bottom: 0px;
+  left: 0px;
+  font-size: 2rem;
+  transform: none;
+  z-index: 1;
+  filter: saturate(1.1);
+}
+
+.tile.variant-diagonal .tile-emoji-poem {
+  top: 0px;
+  right: 0px;
+  bottom: auto;
+  left: auto;
+  font-size: 1.8rem;
+  z-index: 1;
+  filter: saturate(1.1);
+}
+
 /* No Blur Mode */
 .app.no-blur .tile-emoji-plant,
-.app.no-blur .tile-emoji-poem,
-.app.no-blur .mini-tile .tile-emoji-plant,
-.app.no-blur .mini-tile .tile-emoji-poem {
+.app.no-blur .tile-emoji-poem {
   filter: none !important;
 }
 
 /* When tile is taken - emoji fades out (tile "removed" from board) */
+/* When tile is taken - emoji no longer fades (per user request) */
 .tile-emoji-plant.faded {
-  opacity: 0.1;
-  filter: blur(3px) saturate(0) brightness(0.9);
+  opacity: 0.95;
+  filter: blur(0.75px) saturate(1.8) brightness(1.05); /* Same as normal */
 }
 
 .tile-emoji-poem.faded {
-  opacity: 0.1;
-  filter: blur(3px) saturate(0) brightness(0.9);
+  opacity: 0.95;
+  filter: blur(0.6px) saturate(1.6) brightness(1.05); /* Same as normal */
 }
 
 /* Legal move highlight - GREEN, only when enabled */
+/* Legal move highlight - Glowing Effect */
 .tile.legal-highlight {
   cursor: pointer;
-  border-color: var(--legal-border-color);
-  /* Stronger outer glow + inner glow for visibility */
-  box-shadow: 0 0 12px var(--legal-highlight-color), inset 0 0 12px rgba(80, 200, 120, 0.15);
+  border: 2px solid var(--legal-border-color); /* Inner White border */
+  /* Outer Green Border (simulated with shadow) + Glow */
+  box-shadow: 
+   /* Thin solid green outer border */
+    0 0 0 .5px var(--legal-highlight-color),
+    /* Outer Green Glow */
+    0 0 10px color-mix(in srgb, var(--legal-highlight-color), transparent 20%),
+    0 0 20px color-mix(in srgb, var(--legal-highlight-color), transparent 20%),
+    /* Inner Green Glow */
+    inset 0 0 15px color-mix(in srgb, var(--legal-highlight-color), transparent 60%);
 }
 
 .tile.legal-highlight:hover {
   transform: scale(1.05);
-  /* Even stronger glow on hover */
-  box-shadow: 0 0 20px var(--legal-highlight-color), inset 0 0 16px rgba(80, 200, 120, 0.25), var(--shadow-md);
-  border-color: var(--accent-green);
-}
-
-/* Hidden legal moves (default) - no visual cue but clickable */
-.tile.legal-hidden {
-  cursor: pointer;
-}
-
-.tile.legal-hidden:hover {
-  /* Subtle interaction feedback so it doesn't feel broken */
-  background: #fdf5e6; 
 }
 
 /* Taken tile - stays same tile-bg, no transform */
@@ -206,15 +293,21 @@ body {
 }
 
 /* Win cell glow */
+/* Win cell glow - Stronger for emphasis */
 .tile.win-cell {
-  box-shadow: 0 0 16px var(--win-highlight), inset 0 0 12px var(--win-highlight);
-  border-color: rgba(80, 200, 120, 0.6);
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 20px var(--accent-amber), inset 0 0 15px rgba(232, 168, 56, 0.6);
+  z-index: 10;
+  animation: winPulse 1.5s infinite alternate;
+}
+
+@keyframes winPulse {
+  from { box-shadow: 0 0 15px var(--accent-amber); }
+  to { box-shadow: 0 0 30px var(--accent-amber), 0 0 10px #fff; }
 }
 
 /* Last move indicator REMOVED border per request */
-.tile.last-move {
-  /* No special border */
-}
+/* .tile.last-move removed */
 
 /* ========== Token ========== */
 
@@ -325,36 +418,30 @@ body {
 }
 
 /* Taken Tiles Grid */
-.taken-panel {
-    /* Styled inline in App.tsx for structure, visual styles here if needed */
-}
+/* .taken-panel and .taken-grid styled inline in App.tsx */
 
-.taken-grid {
-  /* Using flexbox in App.tsx */
-}
-
+/* Scaled-down tile wrapper */
 .mini-tile {
   position: relative;
-  width: 44px; /* Fixed size for mini tiles */
+  width: 44px; 
   height: 44px;
-  background: var(--tile-bg);
   border-radius: 6px;
+  overflow: hidden; /* Clip the scaled content */
   box-shadow: 0 1px 2px rgba(0,0,0,0.2);
   animation: fadeScaleIn 0.3s ease-out;
+  background: var(--tile-bg); /* Background on container */
 }
 
-.mini-tile .tile-emoji-plant {
-  font-size: 1rem;
-  top: 3px;
-  left: 3px;
-  opacity: 1 !important; /* Force opacity */
-}
-
-.mini-tile .tile-emoji-poem {
-  font-size: 0.85rem;
-  bottom: 3px;
-  right: 3px;
-  opacity: 1 !important;
+/* Inner tile - rendered at near-full size then scaled down */
+.mini-tile-inner {
+  width: 70px; /* Original tile size */
+  height: 70px;
+  transform: scale(0.63); /* 44/70 approx */
+  transform-origin: top left;
+  background: transparent !important; /* Use parent bg */
+  border: none !important; /* No borders on mini tiles */
+  box-shadow: none !important;
+  pointer-events: none;
 }
 
 @keyframes fadeScaleIn {

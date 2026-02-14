@@ -3,8 +3,8 @@ import "./index.css";
 import { useGame } from "./hooks/useGame";
 import { useClock } from "./hooks/useClock";
 import { useAI } from "./hooks/useAI";
-import type { Difficulty, GameMode } from "./engine/types";
-import { PLANT_EMOJI, POEM_EMOJI, PLAYER_EMOJI } from "./engine/constants";
+import { type Difficulty, type GameMode, Poem } from "./engine/types";
+import { PLANT_EMOJI, POEM_EMOJI, PLAYER_EMOJI, BIRD_VARIANTS } from "./engine/constants";
 import { TOTAL_PERMUTATIONS } from "./engine/permutation";
 
 // MUI
@@ -80,6 +80,15 @@ function formatTime(seconds: number): string {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
+// Helper to determine tile layout variant deterministically
+const getTileVariant = (plant: number, poem: number): string => {
+  // varied mapping to Ensure mix of styles
+  const styles = ["variant-standard", "variant-reversed", "variant-centered", "variant-diagonal"];
+  // Use a mix of plant/poem to distribute styles
+  // (plant * 3 + poem) % 4 provides a good scramble preventing row/col patterns
+  return styles[(plant * 3 + poem) % 4];
+};
+
 export default function App() {
   const { state, legalMoves, gameMode, makeMove, newGame, undoMove } = useGame();
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
@@ -104,8 +113,11 @@ export default function App() {
   // Settings
   const [blurEnabled, setBlurEnabled] = useState(true);
   const [showLegalHints, setShowLegalHints] = useState(false);
+  const [simpleBirds, setSimpleBirds] = useState(false);
+  const [overlappingTiles, setOverlappingTiles] = useState(true);
 
   const historyEndRef = useRef<HTMLDivElement>(null);
+  const historyPanelRef = useRef<HTMLDivElement>(null); // Ref for scroll container
   const isMobile = useMediaQuery("(max-width:900px)"); // Breakpoint for layout shift
 
   // AI move callback
@@ -163,9 +175,11 @@ export default function App() {
   }, [gameOver]);
 
   // Auto-scroll history to bottom
+  // Auto-scroll history to bottom (container only, no viewport scroll)
   useEffect(() => {
-    if (showHistory) {
-      historyEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (showHistory && historyPanelRef.current) {
+      const panel = historyPanelRef.current;
+      panel.scrollTo({ top: panel.scrollHeight, behavior: "smooth" });
     }
   }, [state.moveHistory.length, showHistory]);
 
@@ -395,14 +409,20 @@ export default function App() {
                     <div className="board-grid">
                     {state.board.map((tile, i) => {
                         const taken = isTaken(i);
-                        const legal = !taken && isLegal(i) && canInteract;
+                        // Visual legal check: valid move for current player (even if AI)
+                        const isHintable = !taken && isLegal(i); // Show hints regardless of interaction state
+                        const interactable = isHintable && canInteract;
                         const winCell = isWinCell(i);
                         
                         // Styling logic
                         const classes = ["tile"];
+                        if (overlappingTiles) {
+                          classes.push("overlapping");
+                          classes.push(getTileVariant(tile.plant, tile.poem));
+                        }
                         if (taken) classes.push("taken");
                         if (winCell) classes.push("win-cell");
-                        if (legal) {
+                        if (isHintable) {
                             if (showLegalHints) classes.push("legal-highlight");
                             else classes.push("legal-hidden");
                         }
@@ -411,14 +431,17 @@ export default function App() {
                         <div
                             key={i}
                             className={classes.join(" ")}
-                            onClick={() => legal && handleTileClick(i)}
+                            onClick={() => interactable && handleTileClick(i)}
                         >
                             {/* Tile emoji: fade when taken */}
                             <span className={`tile-emoji-plant ${taken ? "faded" : ""}`}>
                             {PLANT_EMOJI[tile.plant]}
                             </span>
                             <span className={`tile-emoji-poem ${taken ? "faded" : ""}`}>
-                            {POEM_EMOJI[tile.poem]}
+                            {tile.poem === Poem.Bird 
+                              ? (simpleBirds ? POEM_EMOJI[Poem.Bird] : BIRD_VARIANTS[tile.plant])
+                              : POEM_EMOJI[tile.poem]
+                            }
                             </span>
 
                             {isP1Token(i) && (
@@ -442,12 +465,26 @@ export default function App() {
                         {takenTiles.length === 0 && (
                             <div className="history-empty" style={{ width: "100%" }}>No taken tiles yet</div>
                         )}
-                        {takenTiles.map((tile, i) => (
+                        {takenTiles.map((tile, i) => {
+                             const classes = ["tile", "mini-tile-inner"];
+                             if (overlappingTiles) {
+                               classes.push("overlapping");
+                               classes.push(getTileVariant(tile.plant, tile.poem));
+                             }
+                             // We render a scaled-down version of the full tile structure
+                             return (
                             <div key={i} className="mini-tile">
-                                <span className="tile-emoji-plant">{PLANT_EMOJI[tile.plant]}</span>
-                                <span className="tile-emoji-poem">{POEM_EMOJI[tile.poem]}</span>
+                                <div className={classes.join(" ")}>
+                                    <span className="tile-emoji-plant">{PLANT_EMOJI[tile.plant]}</span>
+                                    <span className="tile-emoji-poem">
+                                    {tile.poem === Poem.Bird 
+                                      ? (simpleBirds ? POEM_EMOJI[Poem.Bird] : BIRD_VARIANTS[tile.plant])
+                                      : POEM_EMOJI[tile.poem]
+                                    }
+                                    </span>
+                                </div>
                             </div>
-                        ))}
+                        )})}
                     </div>
                 </div>
 
@@ -464,7 +501,10 @@ export default function App() {
                     mt: isMobile ? 2 : 0
                 }}
              >
-                <div className="history-panel" style={{ 
+                <div 
+                    ref={historyPanelRef}
+                    className="history-panel" 
+                    style={{ 
                     height: isMobile ? "auto" : "100%", 
                     maxHeight: isMobile ? "200px" : "500px",
                     marginLeft: isMobile ? 0 : "20px" 
@@ -562,6 +602,11 @@ export default function App() {
             </Typography>
             <Box component="ol" sx={{ pl: 2, m: 0, color: "var(--text-secondary)", fontSize: "0.9rem", lineHeight: 1.6 }}>
               <li>The board is a 4×4 grid of unique tiles, each with a <strong>Plant</strong> and a <strong>Poem</strong>.</li>
+              <li>
+                  <strong>Plants:</strong> Maple 🍁, Cherry 🌸, Pine 🌲, Iris 🪻<br/>
+                  <strong>Poems:</strong> Rising Sun ☀️, Bird (🕊️/🦜/🦩/🐦), Rain Cloud 🌧️, Poem Flag 🏮<br/>
+                  <em>(All bird variants count as the same "Bird" element)</em>
+              </li>
               <li>Player 1 starts by placing a token on any <strong>edge tile</strong>.</li>
               <li>Each subsequent move must match the <strong>Plant or Poem</strong> of the last tile played.</li>
               <li>
@@ -690,6 +735,26 @@ export default function App() {
                   />
                 }
                 label="Show Move History"
+              />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={simpleBirds}
+                    onChange={(e) => setSimpleBirds(e.target.checked)}
+                    color="primary"
+                  />
+                }
+                label="Simple Bird Icons (🐦)"
+              />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={overlappingTiles}
+                    onChange={(e) => setOverlappingTiles(e.target.checked)}
+                    color="primary"
+                  />
+                }
+                label="Artistic Overlap Tiles"
               />
           </DialogContent>
           <DialogActions sx={{ justifyContent: "center", pb: 2 }}>
