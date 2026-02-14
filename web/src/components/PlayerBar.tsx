@@ -12,7 +12,8 @@ const pulse = keyframes`
   50% { opacity: 0.5; }
 `;
 
-const Indicator = styled("div")<{ player: Player; isActive: boolean }>(({ theme, player, isActive }) => ({
+// Added clickable prop for styling interactivity
+const Indicator = styled("div")<{ player: Player; isActive: boolean; clickable?: boolean }>(({ theme, player, isActive, clickable }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "center", // Center content
@@ -28,6 +29,8 @@ const Indicator = styled("div")<{ player: Player; isActive: boolean }>(({ theme,
   transition: "all 0.3s",
   flex: 1, // Take available space
   width: "100%", // Ensure full width in flex item
+  cursor: clickable ? "pointer" : "default", // Pointer if clickable
+  
   [theme.breakpoints.down("sm")]: {
     fontSize: "0.8rem",
     padding: "4px 8px",
@@ -41,6 +44,12 @@ const Indicator = styled("div")<{ player: Player; isActive: boolean }>(({ theme,
     borderColor: tokens.colors.textMuted,
     boxShadow: `0 0 12px ${tokens.colors.p2Glow}`,
   }),
+  // Hover effect for switching sides
+  ...(clickable && {
+    "&:hover": {
+      background: tokens.colors.bgBoard, // Slight highlight
+    }
+  })
 }));
 
 const PlayerEmoji = styled("span")(({ theme }) => ({
@@ -98,6 +107,8 @@ interface PlayerBarProps {
   p1Time: number;
   p2Time: number;
   isThinking?: boolean;
+  aiPlayer?: "p1" | "p2";
+  onSwitchSide?: (player: "p1" | "p2") => void;
 }
 
 export default function PlayerBar({
@@ -110,14 +121,25 @@ export default function PlayerBar({
   p1Time,
   p2Time,
   isThinking = false,
+  aiPlayer = "p2", // Default to p2 for backward compatibility
+  onSwitchSide,
 }: PlayerBarProps) {
   const showClock = gameMode === "local" && clockEnabled;
 
+  const getP1Label = () => {
+      if (gameMode !== "vs-ai") return "Player 1";
+      if (aiPlayer === "p1") return isThinking ? "Thinking..." : "Computer";
+      return "You";
+  };
+
   const getP2Label = () => {
     if (gameMode !== "vs-ai") return "Player 2";
-    if (isThinking) return "Thinking...";
-    return "Computer";
+    if (aiPlayer === "p2") return isThinking ? "Thinking..." : "Computer";
+    return "You";
   };
+
+  const isP1AI = gameMode === "vs-ai" && aiPlayer === "p1";
+  const isP2AI = gameMode === "vs-ai" && aiPlayer === "p2";
 
   return (
     <Box sx={{ 
@@ -126,15 +148,19 @@ export default function PlayerBar({
       gap: 1.5, 
       mt: 1.5, 
       mb: 1, 
-      width: "100%", // Ensure container takes full width
-      padding: "0 16px", // Add padding matching GameControls
+      width: "100%", 
+      padding: "0 16px", 
       justifyContent: "space-between" 
-      // Removed flexWrap to force side-by-side or use grid if needed. 
-      // With flex: 1 they should shrink/grow.
     }}>
-      <Indicator player="p1" isActive={currentPlayer === "p1" && !isGameOver}>
-        <PlayerEmoji>{PLAYER_EMOJI.p1}</PlayerEmoji>
-        <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>Player 1</span>
+      <Indicator 
+        player="p1" 
+        isActive={currentPlayer === "p1" && !isGameOver}
+        clickable={gameMode === "vs-ai"}
+        onClick={() => onSwitchSide?.("p1")}
+        title={gameMode === "vs-ai" ? "Click to switch side" : undefined}
+      >
+        <PlayerEmoji>{isP1AI ? "🤖" : PLAYER_EMOJI.p1}</PlayerEmoji>
+        <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{getP1Label()}</span>
         {showClock && (
           <Clock
             player="p1"
@@ -150,8 +176,14 @@ export default function PlayerBar({
         vs
       </Typography>
 
-      <Indicator player="p2" isActive={currentPlayer === "p2" && !isGameOver}>
-        <PlayerEmoji>{gameMode === "vs-ai" && isThinking ? "🤖" : PLAYER_EMOJI.p2}</PlayerEmoji>
+      <Indicator 
+        player="p2" 
+        isActive={currentPlayer === "p2" && !isGameOver}
+        clickable={gameMode === "vs-ai"}
+        onClick={() => onSwitchSide?.("p2")}
+        title={gameMode === "vs-ai" ? "Click to switch side" : undefined}
+      >
+        <PlayerEmoji>{isP2AI ? "🤖" : PLAYER_EMOJI.p2}</PlayerEmoji>
         <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{getP2Label()}</span>
         {showClock && (
           <Clock

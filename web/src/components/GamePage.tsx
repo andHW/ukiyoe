@@ -47,6 +47,7 @@ export default function GamePage() {
   // Game hooks
   const { state, legalMoves, gameMode, makeMove, newGame, undoMove } = useGame(initialMode);
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
+  const [aiPlayer, setAiPlayer] = useState<"p1" | "p2">("p2");
 
   // Clock
   const [clockTime, setClockTime] = useState(120);
@@ -66,10 +67,10 @@ export default function GamePage() {
 
   // Trigger AI when it's the AI's turn
   useEffect(() => {
-    if (gameMode === "vs-ai" && state.currentPlayer === "p2" && !state.isGameOver && !isThinking) {
+    if (gameMode === "vs-ai" && state.currentPlayer === aiPlayer && !state.isGameOver && !isThinking) {
       requestMove(state, difficulty);
     }
-  }, [gameMode, state, isThinking, difficulty, requestMove]);
+  }, [gameMode, state, isThinking, difficulty, requestMove, aiPlayer]);
 
   // Clock management
   useEffect(() => {
@@ -98,11 +99,13 @@ export default function GamePage() {
     newGame(mode, code);
     clock.reset(clockTime);
     ui.setShowWinOverlay(false);
+    // Reset AI to P2 on new game start? Or keep preference? Keeping preference feels better.
   };
 
   const handleTileClick = (index: number) => {
+    // Only block if it's AI's turn
     if (!legalMoves.includes(index) || state.isGameOver || clock.isExpired) return;
-    if (gameMode === "vs-ai" && state.currentPlayer === "p2") return;
+    if (gameMode === "vs-ai" && state.currentPlayer === aiPlayer) return;
     makeMove(index);
   };
 
@@ -121,8 +124,27 @@ export default function GamePage() {
   };
 
   const handleUndo = () => {
-    if (gameMode === "vs-ai" && state.moveHistory.length >= 2) { undoMove(); undoMove(); }
+    // Allow undo even if game over
+    if (gameMode === "vs-ai" && state.moveHistory.length >= 2) { 
+        // If it's AI turn (e.g. thinking), maybe block? 
+        // But usually AI moves fast. If game over, we just undo.
+        // If AI played last, undo 2 moves to get back to human.
+        // If Human played last (unlikely in vs-ai unless we just switched sides), handle appropriately.
+        // Simplest: Undo twice to revert one full round.
+        undoMove(); 
+        undoMove(); 
+    }
     else undoMove();
+  };
+  
+  const handleSwitchSide = (player: "p1" | "p2") => {
+      // If we click the AI player, we want to TAKE OVER (make it human).
+      // So the AI should become the OTHER player.
+      // E.g. AI is P2. Click P2. AI becomes P1.
+      if (gameMode !== "vs-ai") return;
+      
+      const newAiPlayer = player === "p1" ? "p2" : "p1";
+      setAiPlayer(newAiPlayer);
   };
 
   const handleCycleDifficulty = () => {
@@ -151,7 +173,8 @@ export default function GamePage() {
 
   // --- Derived ---
 
-  const canInteract = !state.isGameOver && !clock.isExpired && !(gameMode === "vs-ai" && state.currentPlayer === "p2");
+  // Block interaction if game over OR AI turn
+  const canInteract = !state.isGameOver && !clock.isExpired && !(gameMode === "vs-ai" && state.currentPlayer === aiPlayer);
 
   const moveHistoryEntries: HistoryEntry[] = state.moveHistory.map((moveIdx, turn) => ({
     moveIdx,
@@ -179,7 +202,7 @@ export default function GamePage() {
              <AppHeader showSubtitle={false} /> 
           </Box>
           <Box sx={{ display: { xs: 'block', sm: 'none' }, fontWeight: 'bold', color: tokens.colors.accentAmber }}>
-            浮世絵
+            百景 Hyakkei
           </Box>
 
           <IconButton onClick={() => ui.setShowSettingsDialog(true)} size="medium">
@@ -194,7 +217,8 @@ export default function GamePage() {
           difficulty={difficulty}
           clockEnabled={clockEnabled}
           clockTime={clockTime}
-          canUndo={state.moveHistory.length > 0 && !state.isGameOver}
+          // Unlimited undo: just check if there is history
+          canUndo={state.moveHistory.length > 0} 
           onNewGame={() => handleNewGame(gameMode)}
           onCycleDifficulty={handleCycleDifficulty}
           onToggleClock={handleToggleClock}
@@ -211,6 +235,8 @@ export default function GamePage() {
           p1Time={clock.p1Time}
           p2Time={clock.p2Time}
           isThinking={isThinking}
+          aiPlayer={aiPlayer}
+          onSwitchSide={handleSwitchSide}
         />
 
         <Box sx={{ position: "relative", width: "100%", mt: 1, display: "flex", justifyContent: "center" }}>
