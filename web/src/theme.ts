@@ -1,4 +1,4 @@
-// MUI theme configuration for Ukiyoe
+// MUI theme configuration for Hyakkei
 import { createTheme } from "@mui/material/styles";
 
 // Design tokens — replaces CSS custom properties from index.css

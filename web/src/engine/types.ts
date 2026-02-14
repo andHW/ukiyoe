@@ -1,4 +1,4 @@
-// Core game types for Ukiyoe
+// Core game types for Hyakkei
 
 export const Plant = {
   Maple: 0,

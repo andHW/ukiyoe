@@ -1,4 +1,4 @@
-# Ukiyoe
+# Hyakkei
 
 > **A strategic tile game inspired by [Niya/Okiya](https://boardgamegeek.com/boardgame/125311/okiya).**
 >
@@ -6,7 +6,7 @@
 
 ## The Project
 
-**Ukiyoe** is a modern web implementation and high-performance solver for the classic tile strategy game. It features a React-based web interface and a C-accelerated Python backend capable of exhaustively analyzing the game's massive state space.
+**Hyakkei** is a modern web implementation and high-performance solver for the classic tile strategy game. It features a React-based web interface and a C-accelerated Python backend capable of exhaustively analyzing the game's massive state space.
 
 The goal is twofold:
 
