@@ -10,29 +10,51 @@ const UNIQUE_TILES = Object.values(Plant).flatMap((plant) =>
   Object.values(Poem).map((poem) => ({ plant, poem }))
 );
 
-const fallAnimation = keyframes`
-  0% { transform: translateY(-20vh) rotate(var(--start-rot)); opacity: 0; }
+const fallStraight = keyframes`
+  0% { transform: translateY(-20vh) translateX(0) rotate(var(--start-rot)); opacity: 0; }
   10% { opacity: 0.9; }
   90% { opacity: 0.9; }
-  100% { transform: translateY(140vh) rotate(var(--end-rot)); opacity: 0; }
+  100% { transform: translateY(140vh) translateX(var(--end-x)) rotate(var(--end-rot)); opacity: 0; }
+`;
+
+const fallWaver = keyframes`
+  0% { transform: translateY(-20vh) translateX(0) rotate(var(--start-rot)); opacity: 0; }
+  10% { opacity: 0.9; }
+  25% { transform: translateY(20vh) translateX(calc(var(--end-x) * 0.5 + 5vw)) rotate(var(--mid-rot-1)); }
+  50% { transform: translateY(60vh) translateX(calc(var(--end-x) * 0.5 - 5vw)) rotate(var(--mid-rot-2)); }
+  75% { transform: translateY(100vh) translateX(calc(var(--end-x) * 0.5 + 5vw)) rotate(var(--mid-rot-1)); }
+  90% { opacity: 0.9; }
+  100% { transform: translateY(140vh) translateX(var(--end-x)) rotate(var(--end-rot)); opacity: 0; }
+`;
+
+const fallPause = keyframes`
+  0% { transform: translateY(-20vh) translateX(0) rotate(var(--start-rot)); opacity: 0; }
+  10% { opacity: 0.9; }
+  45% { transform: translateY(50vh) translateX(calc(var(--end-x) * 0.4)) rotate(var(--mid-rot-1)); }
+  // Sudden pause/slowdown
+  60% { transform: translateY(55vh) translateX(calc(var(--end-x) * 0.45)) rotate(var(--mid-rot-2)); } 
+  90% { opacity: 0.9; }
+  100% { transform: translateY(140vh) translateX(var(--end-x)) rotate(var(--end-rot)); opacity: 0; }
 `;
 
 interface TileProps {
   id: number;
   data: { plant: Plant; poem: Poem };
-  left: number; // 0-100%
-  size: number; // rem
-  duration: number; // s
-  delay: number; // s
+  left: number;
+  size: number;
+  duration: number;
+  delay: number;
   zIndex: number;
-  rotationStart: number; // deg
-  rotationEnd: number; // deg
-  staticTop?: number; // 0-100% for static mode
-  variant: string; // Pre-calculated variant
-  generation: number; // Increment to force remount
+  rotationStart: number;
+  rotationEnd: number;
+  endX: number;
+  animationType: 'straight' | 'waver' | 'pause';
+  staticTop?: number;
+  variant: string;
+  generation: number;
 }
 
-const Z_INDICES = [5, 15, 25, 35, 45, 55]; // Interleaved with UI (10, 20, 30, 40, 50) and over Footer (50)
+const Z_INDICES = [5, 15, 25, 35, 45, 55];
 
 function shuffle<T>(array: T[]): T[] {
   const newArray = [...array];
@@ -45,22 +67,21 @@ function shuffle<T>(array: T[]): T[] {
 
 function randomizeTile(id: number, data: { plant: Plant; poem: Poem }, isStatic: boolean, generation: number): TileProps {
   const rotationStart = Math.random() * 360;
-  // Rotate between 180 and 720 degrees during fall, randomized direction
   const rotationDist = (180 + Math.random() * 540) * (Math.random() > 0.5 ? 1 : -1);
+  const types = ['straight', 'straight', 'waver', 'waver', 'pause'] as const;
   
   return {
     id,
     data,
     left: Math.random() * 90 + 5,
-    size: 3 + Math.random() * 2, // 3rem - 5rem
-    duration: 15 + Math.random() * 15, // 15s - 30s
-    // Only use delay for first generation to stagger starts. 
-    // Subsequent generations start immediately (delay 0) since strict sequencing doesn't matter as much, 
-    // or we can add small delay to prevent instant reappear.
+    size: 3 + Math.random() * 2,
+    duration: 15 + Math.random() * 15,
     delay: generation === 0 ? -Math.random() * 20 : 0, 
     zIndex: Z_INDICES[Math.floor(Math.random() * Z_INDICES.length)],
     rotationStart,
     rotationEnd: rotationStart + rotationDist,
+    endX: (Math.random() * 40) - 20,
+    animationType: types[Math.floor(Math.random() * types.length)],
     staticTop: isStatic ? Math.random() * 100 : undefined,
     variant: getTileVariant(data.plant, data.poem),
     generation,
@@ -109,6 +130,14 @@ function FallingTile({ tile, isLowEnd, enabled, onAnimationEnd }: FallingTilePro
     }
   };
 
+  const getAnimation = (type: TileProps['animationType']) => {
+    switch (type) {
+      case 'waver': return fallWaver;
+      case 'pause': return fallPause;
+      default: return fallStraight;
+    }
+  };
+
   return (
     <Box
       onAnimationEnd={handleAnimationEnd}
@@ -125,6 +154,9 @@ function FallingTile({ tile, isLowEnd, enabled, onAnimationEnd }: FallingTilePro
         // Pass CSS variables for keyframes
         "--start-rot": `${tile.rotationStart}deg`,
         "--end-rot": `${tile.rotationEnd}deg`,
+        "--mid-rot-1": `${tile.rotationStart + (tile.rotationEnd - tile.rotationStart) * 0.33}deg`,
+        "--mid-rot-2": `${tile.rotationStart + (tile.rotationEnd - tile.rotationStart) * 0.66}deg`,
+        "--end-x": `${tile.endX}vw`,
         ...(isLowEnd
           ? {
               // Static Mode
@@ -134,7 +166,7 @@ function FallingTile({ tile, isLowEnd, enabled, onAnimationEnd }: FallingTilePro
           : {
               // Animated Mode
               // Removed 'infinite', handled by state update onAnimationEnd
-              animation: `${fallAnimation} ${tile.duration}s linear`,
+              animation: `${getAnimation(tile.animationType)} ${tile.duration}s linear`,
               animationDelay: `${tile.delay}s`,
               animationPlayState: enabled ? "running" : "paused",
               // Initial placement off-screen
