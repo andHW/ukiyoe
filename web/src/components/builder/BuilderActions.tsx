@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
+import GameButton from "../common/GameButton";
 import { tokens } from "../../theme";
 import type { BuilderStep } from "../../hooks/useBoardBuilder";
 
@@ -29,30 +29,28 @@ export default function BuilderActions({
 
        {/* Generic Auto-fill helper */}
        {currentCount < 4 && canAutoFill && (
-           <Button 
+           <GameButton 
              variant="outlined" 
              fullWidth 
              sx={{ mb: 2 }} 
              onClick={onAutoFill}
            >
              Auto-fill remaining with {activeStep.label} {activeStep.emoji}
-           </Button>
+           </GameButton>
        )}
 
-       <Button
-         variant="contained"
+       <GameButton
+         variant="primary"
          fullWidth
          size="large"
          disabled={!isValidBoard}
          onClick={onFinish}
          sx={{ 
             bgcolor: isValidBoard ? tokens.colors.success : undefined,
-            py: 1.5,
-            fontSize: "1.1rem"
          }}
        >
          {isValidBoard ? "Start Game using this Board" : "Incomplete Board"}
-       </Button>
+       </GameButton>
     </Box>
   );
 }

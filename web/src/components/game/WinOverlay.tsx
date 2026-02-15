@@ -1,7 +1,6 @@
 // Win overlay — game over modal
 import { styled, keyframes } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import CloseIcon from "@mui/icons-material/Close";
@@ -9,6 +8,7 @@ import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import CasinoIcon from "@mui/icons-material/Casino";
 import type { GameState, GameMode } from "../../engine/types";
 import { tokens } from "../../theme";
+import GameButton from "../common/GameButton";
 
 // ---------- Keyframes ----------
 
@@ -117,35 +117,34 @@ export default function WinOverlay({
           Play Again
         </Typography>
 
+
+
         <Stack spacing={2} sx={{ width: "100%" }}>
-          <Button
-            variant="contained" 
+          <GameButton
+            variant="primary" 
             onClick={onRestartSame}
             startIcon={<RestartAltIcon />}
             fullWidth
-            sx={{ color: tokens.colors.bgPrimary, bgcolor: tokens.colors.accentCyan, '&:hover': { bgcolor: tokens.colors.accentCyanDark } }}
+            sx={{ bgcolor: tokens.colors.accentCyan, '&:hover': { bgcolor: tokens.colors.accentCyanDark } }}
           >
             Same Board
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
+          </GameButton>
+          <GameButton
+            variant="primary"
             onClick={onRestartRandom}
             startIcon={<CasinoIcon />}
             fullWidth
-            sx={{ color: tokens.colors.bgPrimary }}
           >
             New Board
-          </Button>
+          </GameButton>
           
-          <Button
-            variant="text"
+          <GameButton
+            variant="ghost"
             onClick={onDismiss}
             fullWidth
-            sx={{ color: tokens.colors.textMuted }}
           >
             View Board
-          </Button>
+          </GameButton>
         </Stack>
       </Modal>
     </Overlay>

@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
+
+import GameButton from "../common/GameButton";
 
 import AppHeader from "../layout/AppHeader";
 import AppFooter from "../layout/AppFooter";
@@ -69,61 +70,36 @@ export default function HomePage() {
 
           <Stack spacing={2} sx={{ width: "100%", maxWidth: 300 }}>
             <Box sx={{ position: "relative", zIndex: 20 }}>
-              <Button
+              <GameButton
                 fullWidth
-                variant="contained"
+                variant="primary"
                 size="large"
                 onClick={() => handleStartGame("local")}
-                sx={{
-                  py: 2,
-                  fontSize: "1.1rem",
-                  backgroundColor: tokens.colors.accentAmber,
-                  color: tokens.colors.bgPrimary,
-                  "&:hover": { backgroundColor: "#d49730" },
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                }}
               >
                 👥 2 Players
-              </Button>
+              </GameButton>
             </Box>
             
             <Box sx={{ position: "relative", zIndex: 30 }}>
-              <Button
+              <GameButton
                 fullWidth
-                variant="contained"
+                variant="secondary"
                 size="large"
                 onClick={() => handleStartGame("vs-ai")}
-                sx={{
-                  py: 2,
-                  fontSize: "1.1rem",
-                  backgroundColor: tokens.colors.bgBoardDark,
-                  color: tokens.colors.textPrimary,
-                  "&:hover": { backgroundColor: tokens.colors.textMuted },
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                }}
               >
                 🤖 vs Computer
-              </Button>
+              </GameButton>
             </Box>
 
             <Box sx={{ position: "relative", zIndex: 35 }}>
-                <Button
+                <GameButton
                   fullWidth
                   variant="outlined"
                   size="large"
                   onClick={() => navigate("/builder")}
-                  sx={{
-                    py: 1.5,
-                    fontSize: "1rem",
-                    borderColor: tokens.colors.border,
-                    color: tokens.colors.textSecondary,
-                    bgcolor: "rgba(255,255,255,0.8)",
-                    backdropFilter: "blur(4px)",
-                    "&:hover": { bgcolor: "white", borderColor: tokens.colors.textSecondary },
-                  }}
                 >
                   🧮 Build Board
-                </Button>
+                </GameButton>
             </Box>
           </Stack>
 
