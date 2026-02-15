@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Page Not Found</title>
+    <script type="text/javascript">
+      // Basic redirect to the home page with hash routing
+      // This handles the case where a user lands on a 404 page (e.g., /hyakkei/bad-path)
+      // and redirects them to /hyakkei/#/
+      
+      // Get the base path dynamically or hardcode it if known.
+      // Since this is for GitHub Pages primarily, we can use a relative redirect to root.
+      // But we need to make sure we don't loop if this page IS the root for some reason (unlikely for 404).
+      
+      // Let's redirect to the root of the repo (e.g. /hyakkei/)
+      // window.location.pathname will be the 404'd path.
+      // We want to go to the repo root.
+      // Easiest is to just use the known base path '/hyakkei/' or rely on meta refresh.
+
+      // If we are at https://andhw.github.io/hyakkei/foo/bar
+      // We want to go to https://andhw.github.io/hyakkei/
+      
+      // Let's use the hardcoded base since it's in vite config anyway.
+      // Or safer:
+      var segmentCount = 0;
+      var l = window.location;
+      
+      // Simple approach: Redirect to the base URL '/hyakkei/'
+      // Verify this matches your vite.config.ts base
+      var base = '/hyakkei/';
+      
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') + base
+      );
+    </script>
+  </head>
+  <body>
+    <p>Redirecting to <a href="/hyakkei/">/hyakkei/</a>...</p>
+  </body>
+</html>
