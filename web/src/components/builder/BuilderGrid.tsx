@@ -103,7 +103,6 @@ export default function BuilderGrid({
                          : undefined,
                       transform: (isHighlighted || isError) ? "scale(1.08)" : "scale(1)",
                       zIndex: (isHighlighted || isError) ? 10 : 0,
-                      transition: "all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
                       opacity: (isEligible && wouldBeDuplicate) ? 0.3 : 1, // Dim invalid duplicates
                       animation: isError ? `${flashRed} 0.4s ease-in-out 3` : undefined, // Blink 3 times quickly
                    }}
