@@ -14,7 +14,7 @@ const fallAnimation = keyframes`
   0% { transform: translateY(-20vh) rotate(var(--start-rot)); opacity: 0; }
   10% { opacity: 0.9; }
   90% { opacity: 0.9; }
-  100% { transform: translateY(120vh) rotate(var(--end-rot)); opacity: 0; }
+  100% { transform: translateY(140vh) rotate(var(--end-rot)); opacity: 0; }
 `;
 
 interface TileProps {
@@ -32,7 +32,7 @@ interface TileProps {
   generation: number; // Increment to force remount
 }
 
-const Z_INDICES = [5, 15, 25, 35, 45]; // Interleaved with UI (10, 20, 30, 40, 50)
+const Z_INDICES = [5, 15, 25, 35, 45, 55]; // Interleaved with UI (10, 20, 30, 40, 50) and over Footer (50)
 
 function shuffle<T>(array: T[]): T[] {
   const newArray = [...array];

@@ -54,85 +54,88 @@ export default function HomePage() {
   */
 
   return (
-    <Container maxWidth="sm" sx={{ display: "flex", flexDirection: "column", minHeight: "100vh", alignItems: "center", py: 4 }}>
+    <Box sx={{ position: "relative", minHeight: "100vh", width: "100%", overflowX: "hidden" }}>
       <FallingTiles enabled={enableEffects} />
       
-      <Box sx={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", width: "100%", gap: 4 }}>
-        <Box 
-          onClick={() => setEnableEffects(prev => !prev)} 
-          sx={{ cursor: "pointer", position: "relative", zIndex: 10, userSelect: "none" }}
-          title={enableEffects ? "Disable falling tiles" : "Enable falling tiles"}
-        >
-          <AppHeader />
+      <Container maxWidth="sm" sx={{ display: "flex", flexDirection: "column", minHeight: "100vh", alignItems: "center", py: 4 }}>
+        <Box sx={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", width: "100%", gap: 4 }}>
+          <Box 
+            onClick={() => setEnableEffects(prev => !prev)} 
+            sx={{ cursor: "pointer", position: "relative", zIndex: 10, userSelect: "none" }}
+            title={enableEffects ? "Disable falling tiles" : "Enable falling tiles"}
+          >
+            <AppHeader />
+          </Box>
+
+          <Stack spacing={2} sx={{ width: "100%", maxWidth: 300 }}>
+            <Box sx={{ position: "relative", zIndex: 20 }}>
+              <Button
+                fullWidth
+                variant="contained"
+                size="large"
+                onClick={() => handleStartGame("local")}
+                sx={{
+                  py: 2,
+                  fontSize: "1.1rem",
+                  backgroundColor: tokens.colors.accentAmber,
+                  color: tokens.colors.bgPrimary,
+                  "&:hover": { backgroundColor: "#d49730" },
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                }}
+              >
+                👥 2 Players
+              </Button>
+            </Box>
+            
+            <Box sx={{ position: "relative", zIndex: 30 }}>
+              <Button
+                fullWidth
+                variant="contained"
+                size="large"
+                onClick={() => handleStartGame("vs-ai")}
+                sx={{
+                  py: 2,
+                  fontSize: "1.1rem",
+                  backgroundColor: tokens.colors.bgBoardDark,
+                  color: tokens.colors.textPrimary,
+                  "&:hover": { backgroundColor: tokens.colors.textMuted },
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                }}
+              >
+                🤖 vs Computer
+              </Button>
+            </Box>
+          </Stack>
+
+          <Box sx={{ 
+            mt: 4, 
+            width: "100%", 
+            p: 3, 
+            borderRadius: tokens.radii.lg, 
+            bgcolor: tokens.colors.bgCard, 
+            border: `1px solid ${tokens.colors.bgBoard}`,
+            boxShadow: tokens.shadows.md,
+            position: "relative", 
+            zIndex: 40 
+          }}>
+            <Typography variant="h6" sx={{ fontFamily: tokens.fonts.display, color: tokens.colors.textPrimary, mb: 1, textAlign: "center" }}>
+              How to Play
+            </Typography>
+            <RulesContent />
+          </Box>
         </Box>
 
-        <Stack spacing={2} sx={{ width: "100%", maxWidth: 300 }}>
-          <Box sx={{ position: "relative", zIndex: 20 }}>
-            <Button
-              fullWidth
-              variant="contained"
-              size="large"
-              onClick={() => handleStartGame("local")}
-              sx={{
-                py: 2,
-                fontSize: "1.1rem",
-                backgroundColor: tokens.colors.accentAmber,
-                color: tokens.colors.bgPrimary,
-                "&:hover": { backgroundColor: "#d49730" },
-                boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-              }}
-            >
-              👥 2 Players
-            </Button>
-          </Box>
-          
-          <Box sx={{ position: "relative", zIndex: 30 }}>
-            <Button
-              fullWidth
-              variant="contained"
-              size="large"
-              onClick={() => handleStartGame("vs-ai")}
-              sx={{
-                py: 2,
-                fontSize: "1.1rem",
-                backgroundColor: tokens.colors.bgBoardDark,
-                color: tokens.colors.textPrimary,
-                "&:hover": { backgroundColor: tokens.colors.textMuted },
-                boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-              }}
-            >
-              🤖 vs Computer
-            </Button>
-          </Box>
-        </Stack>
-
-        <Box sx={{ 
-          mt: 4, 
-          width: "100%", 
-          p: 3, 
-          borderRadius: tokens.radii.lg, 
-          bgcolor: tokens.colors.bgCard, 
-          border: `1px solid ${tokens.colors.bgBoard}`,
-          boxShadow: tokens.shadows.md,
-          position: "relative", 
-          zIndex: 40 
-        }}>
-          <Typography variant="h6" sx={{ fontFamily: tokens.fonts.display, color: tokens.colors.textPrimary, mb: 1, textAlign: "center" }}>
-            How to Play
-          </Typography>
-          <RulesContent />
+        {/* Footer zIndex lowered to 2 so all tiles (z >= 5) fall in front of it */}
+        <Box sx={{ position: "relative", zIndex: 2, mt: 4 }}>
+          <AppFooter />
         </Box>
-      </Box>
 
-      <Box sx={{ position: "relative", zIndex: 50, mt: 4 }}>
-        <AppFooter />
-      </Box>
-
-      <SideSelectionDialog 
-        open={showSideDialog} 
-        onClose={() => setShowSideDialog(false)}
-        onSelect={handleSideSelect}
-      />
-    </Container>
+        <SideSelectionDialog 
+          open={showSideDialog} 
+          onClose={() => setShowSideDialog(false)}
+          onSelect={handleSideSelect}
+        />
+      </Container>
+    </Box>
   );
 }
