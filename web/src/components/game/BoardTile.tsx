@@ -1,4 +1,4 @@
-import { styled, keyframes } from "@mui/material/styles";
+import { styled, keyframes, type SxProps, type Theme } from "@mui/material/styles";
 import type { Tile } from "../../engine/types";
 import { Poem } from "../../engine/types";
 import { PLANT_EMOJI, POEM_EMOJI, BIRD_VARIANTS } from "../../engine/constants";
@@ -30,14 +30,15 @@ const TileRoot = styled("div")<{ clickable: boolean }>(({ clickable }) => ({
   border: "2px solid transparent",
   overflow: "hidden",
   userSelect: "none",
-  minWidth: 70,
+  containerType: "size", // Enable container queries
+  minWidth: 70, // Prevent collapse in fit-content containers
 }));
 
 const EmojiPlant = styled("span")({
   position: "absolute",
-  top: 5,
-  left: 7,
-  fontSize: "2rem",
+  top: "8%",
+  left: "10%",
+  fontSize: "40cqw",
   filter: "blur(0.75px) saturate(1.8) brightness(1.05)",
   opacity: 0.95,
   transition: "opacity 0.4s ease, filter 0.4s ease",
@@ -46,9 +47,9 @@ const EmojiPlant = styled("span")({
 
 const EmojiPoem = styled("span")({
   position: "absolute",
-  bottom: 5,
-  right: 7,
-  fontSize: "1.8rem",
+  bottom: "8%",
+  right: "10%",
+  fontSize: "36cqw",
   filter: "blur(0.6px) saturate(1.6) brightness(1.05)",
   opacity: 0.95,
   transition: "opacity 0.4s ease, filter 0.4s ease",
@@ -61,33 +62,33 @@ const Token = styled("div")<{ player: "p1" | "p2" }>(({ player }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  fontSize: "2.2rem",
+  fontSize: "44cqw",
   borderRadius: tokens.radii.sm,
   animation: `${tokenPlace} 0.35s ease-out`,
   zIndex: 2,
   pointerEvents: "none",
   background: player === "p1" ? tokens.colors.p1Bg : tokens.colors.p2Bg,
-  filter: `drop-shadow(0 0 6px ${player === "p1" ? tokens.colors.p1Glow : tokens.colors.p2Glow})`,
+  filter: `drop-shadow(0 0 6cqw ${player === "p1" ? tokens.colors.p1Glow : tokens.colors.p2Glow})`,
 }));
 
 // ---------- Variant style maps ----------
 
 const variantStyles: Record<string, { plant: React.CSSProperties; poem: React.CSSProperties }> = {
   "variant-standard": {
-    plant: { top: "auto", bottom: -8, left: -4, fontSize: "2.8rem", opacity: 0.95, transform: "rotate(-10deg)", filter: "blur(0.5px) saturate(1.2) brightness(1.05)", zIndex: 1 },
-    poem: { top: 4, right: 4, bottom: "auto", fontSize: "1.4rem", zIndex: 2, filter: "drop-shadow(0 0 4px rgba(240, 221, 197, 0.8))" },
+    plant: { top: "auto", bottom: "-12%", left: "-6%", fontSize: "56cqw", opacity: 0.95, transform: "rotate(-10deg)", filter: "blur(0.5px) saturate(1.2) brightness(1.05)", zIndex: 1 },
+    poem: { top: "6%", right: "6%", bottom: "auto", fontSize: "28cqw", zIndex: 2, filter: "drop-shadow(0 0 4px rgba(240, 221, 197, 0.8))" },
   },
   "variant-reversed": {
-    plant: { top: 4, left: 4, fontSize: "1.4rem", zIndex: 2, filter: "drop-shadow(0 0 4px rgba(240, 221, 197, 0.8))" },
-    poem: { top: "auto", bottom: -6, right: -2, fontSize: "2.6rem", opacity: 0.95, transform: "rotate(5deg)", filter: "blur(0.5px) saturate(1.2) brightness(1.05)", zIndex: 1 },
+    plant: { top: "6%", left: "6%", fontSize: "28cqw", zIndex: 2, filter: "drop-shadow(0 0 4px rgba(240, 221, 197, 0.8))" },
+    poem: { top: "auto", bottom: "-9%", right: "-3%", fontSize: "52cqw", opacity: 0.95, transform: "rotate(5deg)", filter: "blur(0.5px) saturate(1.2) brightness(1.05)", zIndex: 1 },
   },
   "variant-centered": {
-    plant: { top: "50%", left: "50%", transform: "translate(-50%, -50%) scale(1.6)", fontSize: "2.2rem", opacity: 0.6, filter: "blur(0.5px) grayscale(0.2)", zIndex: 1 },
-    poem: { top: 4, left: 4, right: "auto", bottom: "auto", transform: "none", fontSize: "1.5rem", zIndex: 2, filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))" },
+    plant: { top: "50%", left: "50%", transform: "translate(-50%, -50%) scale(1.6)", fontSize: "44cqw", opacity: 0.6, filter: "blur(0.5px) grayscale(0.2)", zIndex: 1 },
+    poem: { top: "6%", left: "6%", right: "auto", bottom: "auto", transform: "none", fontSize: "30cqw", zIndex: 2, filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))" },
   },
   "variant-diagonal": {
-    plant: { top: "auto", bottom: 0, left: 0, fontSize: "2rem", transform: "none", zIndex: 1, filter: "saturate(1.1)" },
-    poem: { top: 0, right: 0, bottom: "auto", left: "auto", fontSize: "1.8rem", zIndex: 1, filter: "saturate(1.1)" },
+    plant: { top: "auto", bottom: 0, left: 0, fontSize: "40cqw", transform: "none", zIndex: 1, filter: "saturate(1.1)" },
+    poem: { top: 0, right: 0, bottom: "auto", left: "auto", fontSize: "36cqw", zIndex: 1, filter: "saturate(1.1)" },
   },
 };
 
@@ -130,6 +131,7 @@ interface BoardTileProps {
   // New prop to force a specific variant style (for falling tiles)
   forceVariant?: string;
   style?: React.CSSProperties;
+  sx?: SxProps<Theme>;
 }
 
 export default function BoardTile({
@@ -148,6 +150,7 @@ export default function BoardTile({
   onClick,
   forceVariant,
   style,
+  sx,
 }: BoardTileProps) {
   const clickable = canInteract && (isLegalHinted || !isTaken) && !!onClick;
   
@@ -185,6 +188,7 @@ export default function BoardTile({
         ...(isTaken && { cursor: "default" }),
         ...(isWin && winCellSx),
         ...(isLegalHinted && legalHighlightSx),
+        ...sx,
       }}
     >
       {plantEmoji && <EmojiPlant style={plantStyle}>{plantEmoji}</EmojiPlant>}
