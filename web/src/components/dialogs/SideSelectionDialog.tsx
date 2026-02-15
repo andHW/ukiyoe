@@ -26,14 +26,15 @@ export default function SideSelectionDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      PaperProps={{
-        sx: {
-          bgcolor: tokens.colors.bgSecondary,
-          color: tokens.colors.textPrimary,
-          borderRadius: tokens.radii.lg,
-          border: `1px solid ${tokens.colors.bgBoard}`,
-          minWidth: 300,
-        },
+      slotProps={{
+        paper: {
+            sx: {
+                // bgcolor, color, borderRadius handled by theme default (mostly)
+                // but this specific dialog wants explicit border and minWidth
+                border: `1px solid ${tokens.colors.bgBoard}`,
+                minWidth: 300,
+            }
+        }
       }}
     >
       <DialogTitle

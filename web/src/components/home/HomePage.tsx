@@ -5,7 +5,6 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
-import Tooltip from "@mui/material/Tooltip";
 
 import AppHeader from "../layout/AppHeader";
 import AppFooter from "../layout/AppFooter";
@@ -108,7 +107,6 @@ export default function HomePage() {
             </Box>
 
             <Box sx={{ position: "relative", zIndex: 35 }}>
-              <Tooltip title="Build Custom Board">
                 <Button
                   fullWidth
                   variant="outlined"
@@ -126,7 +124,6 @@ export default function HomePage() {
                 >
                   🧮 Build Board
                 </Button>
-              </Tooltip>
             </Box>
           </Stack>
 

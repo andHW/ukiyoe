@@ -102,8 +102,8 @@ export default function BoardBuilder() {
         onClose={handleClearCancel}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
-        PaperProps={{
-            sx: { borderRadius: tokens.radii.lg, bgcolor: tokens.colors.bgCard }
+        slotProps={{
+             paper: { sx: { bgcolor: tokens.colors.bgCard } }
         }}
       >
         <DialogTitle id="alert-dialog-title" sx={{ color: tokens.colors.textPrimary, fontFamily: tokens.fonts.display }}>

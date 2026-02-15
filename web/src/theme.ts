@@ -87,6 +87,15 @@ const theme = createTheme({
         },
       },
     },
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          borderRadius: tokens.radii.lg,
+          backgroundColor: tokens.colors.bgSecondary,
+          backgroundImage: "none",
+        },
+      },
+    },
     MuiCssBaseline: {
       styleOverrides: {
         "#root": {
