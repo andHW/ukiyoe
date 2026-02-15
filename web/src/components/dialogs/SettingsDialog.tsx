@@ -22,6 +22,7 @@ interface SettingsDialogProps {
   settings: Settings;
   onUpdate: <K extends keyof Settings>(key: K, value: Settings[K]) => void;
   onClose: () => void;
+  hiddenKeys?: (keyof Settings)[];
 }
 
 const toggles: { key: keyof Settings; label: string }[] = [
@@ -32,14 +33,16 @@ const toggles: { key: keyof Settings; label: string }[] = [
   { key: "overlappingTiles", label: "Artistic Tiles" },
 ];
 
-export default function SettingsDialog({ open, settings, onUpdate, onClose }: SettingsDialogProps) {
+export default function SettingsDialog({ open, settings, onUpdate, onClose, hiddenKeys = [] }: SettingsDialogProps) {
+  const visibleToggles = toggles.filter(t => !hiddenKeys.includes(t.key));
+
   return (
     <Dialog open={open} onClose={onClose} slotProps={{ paper: { sx: paperSx } }}>
       <DialogTitle sx={{ fontFamily: tokens.fonts.display, color: tokens.colors.textPrimary, textAlign: "center" }}>
         ⚙️ Settings
       </DialogTitle>
       <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 2 }}>
-        {toggles.map(({ key, label }) => (
+        {visibleToggles.map(({ key, label }) => (
           <FormControlLabel
             key={key}
             control={

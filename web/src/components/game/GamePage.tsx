@@ -47,9 +47,11 @@ export default function GamePage() {
   // Get mode from URL, default to local if invalid
   const initialMode = (searchParams.get("mode") as GameMode) || "local";
   const initialAI = (searchParams.get("ai") as "p1" | "p2") || "p2";
+  const initialCodeParam = searchParams.get("code");
+  const initialCode = initialCodeParam ? parseInt(initialCodeParam) : undefined;
   
   // Game hooks
-  const { state, legalMoves, gameMode, makeMove, newGame, undoMove } = useGame(initialMode);
+  const { state, legalMoves, gameMode, makeMove, newGame, undoMove } = useGame(initialMode, !isNaN(initialCode!) ? initialCode : undefined);
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
   const [aiPlayer, setAiPlayer] = useState<"p1" | "p2">(initialAI);
   const [showTip, setShowTip] = useState(false);

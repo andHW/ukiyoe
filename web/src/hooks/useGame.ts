@@ -14,10 +14,29 @@ interface UseGameReturn {
   undoMove: () => void;
 }
 
-export function useGame(initialMode: GameMode = "local"): UseGameReturn {
+export function useGame(initialMode: GameMode = "local", initialCode?: number): UseGameReturn {
   const [gameMode, setGameMode] = useState<GameMode>(initialMode);
   const [stateHistory, setStateHistory] = useState<GameState[]>(() => {
-    const { board, code } = createRandomBoard();
+    let board: Tile[];
+    let code: number;
+
+    if (initialCode !== undefined) {
+       const result = createBoardFromCode(initialCode);
+       if (result) {
+          board = result.board;
+          code = result.code;
+       } else {
+          // Fallback if invalid code
+          const random = createRandomBoard();
+          board = random.board;
+          code = random.code;
+       }
+    } else {
+       const random = createRandomBoard();
+       board = random.board;
+       code = random.code;
+    }
+    
     return [createInitialState(board, code)];
   });
 

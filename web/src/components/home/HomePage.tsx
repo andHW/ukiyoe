@@ -5,6 +5,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
+import Tooltip from "@mui/material/Tooltip";
 
 import AppHeader from "../layout/AppHeader";
 import AppFooter from "../layout/AppFooter";
@@ -104,6 +105,28 @@ export default function HomePage() {
               >
                 🤖 vs Computer
               </Button>
+            </Box>
+
+            <Box sx={{ position: "relative", zIndex: 35 }}>
+              <Tooltip title="Build Custom Board">
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  size="large"
+                  onClick={() => navigate("/builder")}
+                  sx={{
+                    py: 1.5,
+                    fontSize: "1rem",
+                    borderColor: tokens.colors.border,
+                    color: tokens.colors.textSecondary,
+                    bgcolor: "rgba(255,255,255,0.8)",
+                    backdropFilter: "blur(4px)",
+                    "&:hover": { bgcolor: "white", borderColor: tokens.colors.textSecondary },
+                  }}
+                >
+                  🧮 Build Board
+                </Button>
+              </Tooltip>
             </Box>
           </Stack>
 

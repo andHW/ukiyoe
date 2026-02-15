@@ -1,6 +1,5 @@
-// Board tile — single tile with all layout variants, tokens, and state styles
 import { styled, keyframes } from "@mui/material/styles";
-import type { Tile, Poem as PoemType } from "../../engine/types";
+import type { Tile } from "../../engine/types";
 import { Poem } from "../../engine/types";
 import { PLANT_EMOJI, POEM_EMOJI, BIRD_VARIANTS } from "../../engine/constants";
 import { getTileVariant } from "../../utils/tileVariant";
@@ -114,7 +113,7 @@ const legalHighlightSx = {
 // ---------- Props ----------
 
 interface BoardTileProps {
-  tile: Tile;
+  tile: Partial<Tile>;
   index?: number;
   isTaken?: boolean;
   isP1?: boolean;
@@ -153,7 +152,9 @@ export default function BoardTile({
   const clickable = canInteract && (isLegalHinted || !isTaken) && !!onClick;
   
   // Use forced variant if provided, otherwise calculate based on overlapping logic
-  const variantKey = forceVariant || (overlapping ? getTileVariant(tile.plant, tile.poem) : null);
+  // Only calculate variant if both plant and poem are present
+  const hasContent = tile.plant !== undefined && tile.poem !== undefined;
+  const variantKey = forceVariant || (overlapping && hasContent ? getTileVariant(tile.plant!, tile.poem!) : null);
   const vStyles = variantKey ? variantStyles[variantKey] : null;
 
   const noBlurFilter = { filter: "none" };
@@ -170,8 +171,10 @@ export default function BoardTile({
     tile.poem === Poem.Bird
       ? simpleBirds
         ? POEM_EMOJI[Poem.Bird]
-        : BIRD_VARIANTS[tile.plant]
-      : POEM_EMOJI[tile.poem as PoemType];
+        : (tile.plant !== undefined ? BIRD_VARIANTS[tile.plant] : POEM_EMOJI[Poem.Bird]) // Fallback if no plant
+      : (tile.poem !== undefined ? POEM_EMOJI[tile.poem] : null);
+
+  const plantEmoji = tile.plant !== undefined ? PLANT_EMOJI[tile.plant] : null;
 
   return (
     <TileRoot
@@ -184,8 +187,8 @@ export default function BoardTile({
         ...(isLegalHinted && legalHighlightSx),
       }}
     >
-      <EmojiPlant style={plantStyle}>{PLANT_EMOJI[tile.plant]}</EmojiPlant>
-      <EmojiPoem style={poemStyle}>{poemEmoji}</EmojiPoem>
+      {plantEmoji && <EmojiPlant style={plantStyle}>{plantEmoji}</EmojiPlant>}
+      {poemEmoji && <EmojiPoem style={poemStyle}>{poemEmoji}</EmojiPoem>}
 
       {isP1 && <Token player="p1">{playerEmoji.p1}</Token>}
       {isP2 && <Token player="p2">{playerEmoji.p2}</Token>}

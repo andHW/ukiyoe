@@ -32,6 +32,8 @@ export const tokens = {
     winHighlight: "rgba(80, 200, 120, 0.35)",
     legalHighlight: "#5bff92",
     legalBorder: "rgba(255, 255, 255, 0.95)",
+    border: "rgba(255, 255, 255, 0.12)",
+    success: "#4cd964",
   },
   radii: {
     sm: "6px",
