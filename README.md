@@ -4,6 +4,13 @@
 >
 > _Original game design by Bruno Cathala, Art by Cyril Bouquet._
 
+<div align="center">
+
+[![Gameplay Demo](gameplay.gif)](https://andhw.github.io/hyakkei/)
+
+[![Play Now](https://img.shields.io/badge/Play_Now-4caf50?style=for-the-badge)](https://andhw.github.io/hyakkei/)
+</div>
+
 ## The Project
 
 **Hyakkei** is a modern web implementation and high-performance solver for the classic tile strategy game. It features a React-based web interface and a C-accelerated Python backend capable of exhaustively analyzing the game's massive state space.
